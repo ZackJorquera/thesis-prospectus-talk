@@ -1,0 +1,216 @@
+%%%%% Basics %%%%%
+
+\usepackage{amsmath,amssymb,amsthm,xspace,amsfonts,amscd,braket,bm,bbm,mathtools}
+\usepackage{blkarray}
+
+\usepackage{geometry}
+\geometry{textwidth=16cm}
+
+%%% Other stuff
+
+\usepackage{ytableau}
+
+
+%%%%% MACROS %%%%%
+
+%%% TCS Macros
+\newcommand{\cc}[1]{\ensuremath{\mathsf{#1}}}
+\newcommand{\algprobm}[1]{{\normalfont\textsc{#1}}\xspace}
+
+\DeclareMathOperator{\OPT}{OPT}
+\DeclareMathOperator{\Gap}{Gap}
+\DeclareMathOperator{\poly}{poly}
+
+\DeclareMathOperator{\LP}{LP}
+\DeclareMathOperator{\SDP}{SDP}
+
+%%% Graph Theory Macros
+\DeclareMathOperator{\zigzagprod}{
+  \mathchoice
+    {\mathrel{\ooalign{$\bigcirc$\cr\hidewidth$\mathsmaller{\mathcal{Z}}$\hidewidth}}} % \displaystyle
+    {\mathrel{\ooalign{$\bigcirc$\cr\hidewidth$\mathsmaller{\mathcal{Z}}$\hidewidth}}} %\textstyle
+    {\mathrel{\ooalign{$\scriptstyle\bigcirc$\cr\hidewidth$\scriptstyle\mathsmaller{\mathcal{Z}}$\hidewidth}}} % \scriptstyle
+    {\mathrel{\ooalign{$\scriptscriptstyle\bigcirc$\cr\hidewidth$\scriptscriptstyle\mathsmaller{\mathcal{Z}}$\hidewidth}}} % \scriptscriptstyle
+}
+
+%%% Math Macros
+\DeclareMathOperator{\sign}{sign}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\supp}{supp}
+
+\DeclareMathOperator{\im}{im}
+\DeclareMathOperator{\coker}{coker}
+
+\DeclareMathOperator{\Span}{span} % One day latex will fix their shit and we can have \span without the capital. Today, however, is not that day.
+\DeclareMathOperator{\End}{End}
+\DeclareMathOperator{\Ann}{Ann}
+\DeclareMathOperator{\Ab}{Ab}
+\DeclareMathOperator{\Id}{Id}
+\DeclareMathOperator{\id}{id}
+\DeclareMathOperator{\Hom}{Hom}
+\DeclareMathOperator{\eval}{eval}
+\DeclareMathOperator{\GL}{GL}
+
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+\DeclareMathOperator*{\E}{\mathbb{E}}
+
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\Tr}{Tr}
+\DeclareMathOperator{\td}{td}
+\DeclareMathOperator{\ad}{ad}
+\DeclareMathOperator{\Ad}{Ad}
+\DeclareMathOperator{\eig}{eig}
+\DeclareMathOperator{\eigs}{eigs}
+
+\DeclareMathOperator{\Cay}{Cay}
+
+\newcommand{\Cstar}{\ensuremath{C^*}}
+\DeclareMathOperator{\op}{op}
+
+%%% Quantum Macros
+
+\DeclareMathOperator{\EPR}{EPR}
+\DeclareMathOperator{\GHZ}{GHZ}
+
+\DeclareMathOperator{\swap}{Swap}
+
+%%% Misc Macros
+\newcommand{\ra}{\rightarrow}
+
+\newcommand{\mathsc}[1]{{\normalfont\textsc{#1}}}
+\newcommand{\mathtext}[1]{{\normalfont\text{#1}}}
+
+\newcommand{\calA}{\mathcal A}
+\newcommand{\calB}{\mathcal B}
+\newcommand{\calC}{\mathcal C}
+\newcommand{\calD}{\mathcal D}
+\newcommand{\calE}{\mathcal E}
+\newcommand{\calF}{\mathcal F}
+\newcommand{\calG}{\mathcal G}
+\newcommand{\calH}{\mathcal H}
+\newcommand{\calI}{\mathcal I}
+\newcommand{\calJ}{\mathcal J}
+\newcommand{\calK}{\mathcal K}
+\newcommand{\calL}{\mathcal L}
+\newcommand{\calM}{\mathcal M}
+\newcommand{\calN}{\mathcal N}
+\newcommand{\calO}{\mathcal O}
+\newcommand{\calP}{\mathcal P}
+\newcommand{\calQ}{\mathcal Q}
+\newcommand{\calR}{\mathcal R}
+\newcommand{\calS}{\mathcal S}
+\newcommand{\calT}{\mathcal T}
+\newcommand{\calU}{\mathcal U}
+\newcommand{\calV}{\mathcal V}
+\newcommand{\calW}{\mathcal W}
+\newcommand{\calX}{\mathcal X}
+\newcommand{\calY}{\mathcal Y}
+\newcommand{\calZ}{\mathcal Z}
+
+\newcommand{\bbB}{\mathbb B}
+\newcommand{\bbC}{\mathbb C}
+\newcommand{\bbS}{\mathbb S}
+\newcommand{\bbR}{\mathbb R}
+\newcommand{\bbZ}{\mathbb Z}
+\newcommand{\bbI}{\mathbb I}
+\newcommand{\bbQ}{\mathbb Q}
+\newcommand{\bbP}{\mathbb P}
+\newcommand{\bbE}{\mathbb E}
+\newcommand{\bbT}{\mathbb T}
+
+\newcommand{\sfT}{\mathsf T}
+
+\newcommand{\R}{\mathbb R}
+\newcommand{\RR}{\mathbb{R}^{+}}
+\newcommand{\C}{\mathbb C}
+\newcommand{\N}{\mathbb N}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\ZZ}{\mathbb{Z}_{\geq 0}}
+\newcommand{\ZZZ}{\mathbb{Z}_{> 0}}
+\newcommand{\F}{\mathbb F}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\T}{\mathbb T}
+
+\newcommand{\SU}{S\calU}
+\newcommand{\SO}{S\calO}
+
+\newcommand{\fraka}{\mathfrak{a}}
+\newcommand{\frakb}{\mathfrak{b}}
+\newcommand{\frakc}{\mathfrak{c}}
+\newcommand{\frakd}{\mathfrak{d}}
+\newcommand{\frake}{\mathfrak{e}}
+\newcommand{\frakf}{\mathfrak{f}}
+\newcommand{\frakg}{\mathfrak{g}}
+\newcommand{\frakh}{\mathfrak{h}}
+\newcommand{\fraki}{\mathfrak{i}}
+\newcommand{\frakj}{\mathfrak{j}}
+\newcommand{\frakk}{\mathfrak{k}}
+\newcommand{\frakl}{\mathfrak{l}}
+\newcommand{\frakm}{\mathfrak{m}}
+\newcommand{\frakn}{\mathfrak{n}}
+\newcommand{\frako}{\mathfrak{o}}
+\newcommand{\frakp}{\mathfrak{p}}
+\newcommand{\frakq}{\mathfrak{q}}
+\newcommand{\frakr}{\mathfrak{r}}
+\newcommand{\fraks}{\mathfrak{s}}
+\newcommand{\frakt}{\mathfrak{t}}
+\newcommand{\fraku}{\mathfrak{u}}
+\newcommand{\frakv}{\mathfrak{v}}
+\newcommand{\frakw}{\mathfrak{w}}
+\newcommand{\frakx}{\mathfrak{x}}
+\newcommand{\fraky}{\mathfrak{y}}
+\newcommand{\frakz}{\mathfrak{z}}
+
+\newcommand{\frakgl}{\mathfrak{gl}}
+\newcommand{\fraksl}{\mathfrak{sl}}
+\newcommand{\fraksu}{\mathfrak{su}}
+\newcommand{\frakso}{\mathfrak{so}}
+
+\DeclarePairedDelimiter\parens{\lparen}{\rparen}
+\DeclarePairedDelimiter\abs{\lvert}{\rvert}
+\DeclarePairedDelimiter\norm{\lVert}{\rVert}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\braces{\lbrace}{\rbrace}
+\DeclarePairedDelimiter\bracks{\lbrack}{\rbrack}
+\DeclarePairedDelimiter\angles{\langle}{\rangle}
+
+%%%%% Fixes %%%%%
+
+\mathtoolsset{centercolon}
+
+\usepackage{silence} % Sometimes you just have to silence the warnings, I'm sorry I tried my best the "correct way."
+
+%%% Fixes for \bra, \ket, and \braket
+% Initially From: https://tex.stackexchange.com/a/288752/303504
+\makeatletter
+\renewcommand\ket[1]{%
+  \@ifnextchar\bra{\k@t{#1}\!}{%
+    \@ifnextchar\braket{\k@t{#1}\!}{\k@t{#1}}%
+  }%
+}
+\newcommand\k@t[1]{{|{#1}\rangle}}
+\makeatother
+
+\makeatletter
+\renewcommand\braket[1]{%
+  \@ifnextchar\bra{\br@k@t{#1}\!}{%
+    \@ifnextchar\braket{\br@k@t{#1}\!}{\br@k@t{#1}}%
+  }%
+}
+\newcommand\br@k@t[1]{{\langle{#1}\rangle}}
+\makeatother
+
+%\renewcommand\bra[1]{{\langle{#1}|}}
+\makeatletter % I dont see the point of ever using `\bra{a}\ket{b}` and not wanting <a|b>. If you want two lines it is better to use `\|`.
+\renewcommand\bra[1]{%
+  \@ifnextchar\ket{\br@nv{#1}}{\br@{#1}}%
+}
+\newcommand\br@[1]{{\langle{#1}|}}
+\newcommand\br@nv[1]{{\langle{#1}}}
+\makeatother
+
+\newcommand{\tstrut}{\rule{0pt}{2.6ex}}
+\newcommand{\bstrut}{\rule[-1.2ex]{0pt}{0pt}}
