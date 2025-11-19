@@ -1,5 +1,5 @@
 # Render everything: 
-# manim talk.py TitleSlide MaxCutExampleVideo ALittleQuantumVideo ALittleMoreQuantum2Video AnAlgorithmForMEVideo ALittleSOSVideo Overview IntroToCSPs MaxCutExample ALittleQuantum IntroToLHPs QuantumMaxCut ALittleMoreQuantum ALittleMoreQuantum2 BabysFirstProofTheStarBound AnAlgorithmForME CSPsOverDistributions ALittleSOS ALittleMoreSOS TheFinalSOSSlide QMdCIntro QMdCStarBound QMdCPartialResults FutureWork Thanks
+# manim talk.py TitleSlide MaxCutExampleVideo ALittleQuantumVideo ALittleMoreQuantum2Video AnAlgorithmForMEVideo ALittleSOSVideo Overview IntroToCSPs MaxCutExample ALittleQuantum IntroToLHPs QuantumMaxCut WhyCare ALittleMoreQuantum ALittleMoreQuantum2 BabysFirstProofTheStarBound AnAlgorithmForME CSPsOverDistributions ALittleSOS ALittleMoreSOS TheFinalSOSSlide QMdCIntro QMdCStarBound QMdCPartialResults FutureWork Thanks
 
 # Render everything except Overview: 
 # manim talk.py TitleSlide IntroToCSPs MaxCutExample ALittleQuantum IntroToLHPs QuantumMaxCut ALittleMoreQuantum ALittleMoreQuantum2 BabysFirstProofTheStarBound AnAlgorithmForME CSPsOverDistributions ALittleSOS ALittleMoreSOS TheFinalSOSSlide QMdCIntro QMdCStarBound QMdCPartialResults FutureWork Thanks
@@ -8,12 +8,12 @@
 # manim talk.py MaxCutExampleVideo ALittleQuantumVideo ALittleMoreQuantum2Video AnAlgorithmForMEVideo ALittleSOSVideo Overview
 
 # Convert whole slideshow to HTML
-# manim-slides convert --use-template template.html --config one_file=true TitleSlide Overview IntroToCSPs MaxCutExample ALittleQuantum IntroToLHPs QuantumMaxCut ALittleMoreQuantum ALittleMoreQuantum2 BabysFirstProofTheStarBound AnAlgorithmForME CSPsOverDistributions ALittleSOS ALittleMoreSOS TheFinalSOSSlide QMdCIntro QMdCStarBound QMdCPartialResults FutureWork Thanks talk.html
+# manim-slides convert --use-template template.html --config one_file=true TitleSlide Overview IntroToCSPs MaxCutExample ALittleQuantum IntroToLHPs QuantumMaxCut WhyCare ALittleMoreQuantum ALittleMoreQuantum2 BabysFirstProofTheStarBound AnAlgorithmForME CSPsOverDistributions ALittleSOS ALittleMoreSOS TheFinalSOSSlide QMdCIntro QMdCStarBound QMdCPartialResults FutureWork Thanks talk.html
 
 
 import manim as mn
 from manim import *
-from videomobject import VideoMobject
+from helpermobjects import VideoMobject, Bullets, FancyTitle, LeftRightArrows
 
 from manim_slides import Slide
 
@@ -30,37 +30,6 @@ Tex.set_default(tex_template=my_template)
 MathTex.set_default(tex_template=my_template)
 
 manim_video_output_dir = r"media\videos\talk\1080p60"
-
-# The built-in Title Mobject is centered and I dont want that.
-class FancyTitle(VGroup):
-    def __init__(self,text,**kwargs):
-        for keyword in [r"Quantum Max-Cut", r"Max-Cut", r"Quantum Max-\(d\)-Cut", r"Max-\(d\)-Cut", r"Maximal Entanglement"]:
-            text = text.replace(keyword, rf"\algprobm{{{keyword}}}")
-
-        self.title_text = text
-        
-        # self.title = Text(text, font_size=36)
-        self.title = Tex(text, font_size=48)
-        self.title.to_corner(UL, buff=0.5)
-        self.line = Line(4*LEFT, 6*RIGHT)
-        self.line.next_to(self.title, DOWN, aligned_edge=LEFT, buff=0.15).shift(LEFT*0.25)
-        super().__init__(self.title,self.line,**kwargs)
-
-    def create(self):
-        return LaggedStart(Write(self.title), Create(self.line), lag_ratio=0.5)
-
-    def anim(self,run_time=0.75):
-        return LaggedStart(Write(self.title,run_time=run_time/1.5), Create(self.line,run_time=run_time/1.5), lag_ratio=0.5)
-    
-
-class LeftRightArrows(VGroup):
-    def __init__(self,start=LEFT,end=RIGHT,buff=0.25,tip_length=0.2,**kwargs):
-        self.right = Arrow(start=start+UP*(buff/2),end=end+UP*(buff/2),tip_length=tip_length,**kwargs)
-        self.left = Arrow(start=end+DOWN*(buff/2),end=start+DOWN*(buff/2),tip_length=tip_length,**kwargs)
-        super().__init__(self.right,self.left,**kwargs)
-
-    def create(self):
-        return LaggedStart(Create(self.right), Create(self.left), lag_ratio=0.75)
 
 
 class TitleSlide(Slide):
@@ -79,7 +48,7 @@ class TitleSlide(Slide):
         self.play(LaggedStart(Write(title_text),Create(line),Write(author_text),lag_ratio=0.5))
 
         self.wait(0.1)
-        self.next_slide()
+        self.next_slide(notes="These are some notes.")
         self.clear()
 
         ack_title = FancyTitle(r"Acknowledgement")
@@ -210,91 +179,6 @@ class Overview(Slide):
         self.wait(vid5.get_duration())
 
 
-class ALittleQuantumVideo(Scene):
-    def setup(self):
-        theme = "Monokai Pro Light" # select a theme from https://iterm2colorschemes.com
-        apply_theme(manim_scene=self, theme_name=theme, light_theme=True) # use the theme
-
-
-    def construct(self):
-        cart_prod = MathTex(r"\{0,1\} \times \{0,1\}").shift(LEFT*5+UP*1.5)
-        cart_prod_copy = cart_prod.copy()
-        cart_prod2 = MathTex(r"=\{00,01,10,11\}").next_to(cart_prod, RIGHT, buff=0.2)
-        cart_prod2_copy = cart_prod2.copy()
-
-        tensor_prod = MathTex(r"\{\ket{00},\ket{01},",r"\ket{10},",r"\ket{11}\}").next_to(cart_prod2, RIGHT, buff=1)
-        tensor_prod_part2_copy = tensor_prod[1].copy()
-        tensor_prod_part2_exp = MathTex(r"\overbrace{\ket{10} = \ket{1} \otimes \ket{0}}").next_to(tensor_prod[1],DOWN,buff=0.25)
-
-        ent_state = MathTex(r"\ket{\psi}", r"= \alpha_{00} \ket{00}", r"+ \alpha_{01} \ket{01}", r"+ \alpha_{10} \ket{10}", r"+ \alpha_{11} \ket{11}").shift(DOWN * 1.5)
-        ent_state_1_copy = ent_state[0].copy()
-        unit_vec_const_2 = MathTex(r"\bra{\psi}\ket{\psi} = 1").next_to(ent_state[0],DOWN,buff=0.5).shift(RIGHT)
-
-        two_strings_text = Tex(r"Classical (2-Bit) Strings",font_size=28).next_to(cart_prod, UP, buff=0.5)
-        comp_basis_2qubits_text = Tex(r"Computational Basis",font_size=28).next_to(tensor_prod, UP, buff=0.5)
-        abr_2qubit_state_text = Tex(r"Two-Qubit State",font_size=28).next_to(ent_state, UP, buff=0.5)
-
-        self.play(Write(cart_prod), Write(two_strings_text), run_time=0.5)
-        self.add(cart_prod_copy)
-        self.wait(0.25)
-        self.play(TransformMatchingShapes(cart_prod_copy,cart_prod2),two_strings_text.animate.shift(RIGHT*2), run_time=0.5)
-
-        self.wait(0.25)
-
-        self.play(TransformMatchingShapes(cart_prod2_copy,tensor_prod), Write(comp_basis_2qubits_text), run_time=0.5)
-        self.add(tensor_prod_part2_copy)
-        self.play(TransformMatchingShapes(tensor_prod_part2_copy,tensor_prod_part2_exp), run_time=0.5)
-
-        self.play(Write(ent_state), Write(abr_2qubit_state_text), run_time=0.5)
-        self.add(ent_state_1_copy)
-        self.play(TransformMatchingShapes(ent_state_1_copy,unit_vec_const_2))
-
-        # tensor_prod_stuff_1 = [
-        #     cart_prod,
-        #     cart_prod2,
-        #     tensor_prod,
-        #     tensor_prod_part2_exp,
-        #     unit_vec_const_2,
-        #     two_strings_text,
-        #     comp_basis_2qubits_text,
-        #     abr_2qubit_state_text]
-        # animations2 = [item.animate.shift(RIGHT*2).set_opacity(0) for item in tensor_prod_stuff_1]
-        # self.play(LaggedStart(AnimationGroup(*animations2, run_time=0.5), ent_state.animate.move_to(cart_prod,aligned_edge=LEFT).shift(DOWN*0.5).scale(0.75),lag_ratio=0.5))
-        # self.remove(*tensor_prod_stuff_1)
-
-        # ent_state1b = MathTex(r"\ket{\psi}", r"= \alpha^{(1)}_{0}\alpha^{(2)}_{0} \ket{00}", r"+ \alpha^{(1)}_{0}\alpha^{(2)}_{1} \ket{01}", r"+ \alpha^{(1)}_{1}\alpha^{(2)}_{0} \ket{10}", r"+ \alpha^{(1)}_{1}\alpha^{(2)}_{1} \ket{11}",
-        #                      font_size=28).move_to(ent_state,aligned_edge=LEFT)
-        # ent_state2 = MathTex(r"= \alpha^{(1)}_{0}\alpha^{(2)}_{0} \ket{0} \otimes \ket{0}", r"+ \alpha^{(1)}_{0}\alpha^{(2)}_{1} \ket{0} \otimes \ket{1}", r"+  \alpha^{(1)}_{1}\alpha^{(2)}_{0} \ket{1} \otimes \ket{0}", r"+ \alpha^{(1)}_{1}\alpha^{(2)}_{1} \ket{1} \otimes \ket{1}",
-        #                     font_size=28).move_to(ent_state1b[1],aligned_edge=LEFT)
-        # # ent_state3 =MathTex(r"\ket{\psi}", r"= \ket{0} \otimes \left(\alpha_{00} \ket{0} + \alpha_{01} \ket{1}\right)", r"+ \ket{1} \otimes \left(\alpha_{10} \ket{0} + \alpha_{11} \ket{1}\right)").next_to(ent_state2,DOWN,aligned_edge=LEFT,buff=0.25)
-        # prod_state_0 = MathTex(r"= \alpha^{(1)}_{0} \ket{0} \otimes \left(\alpha^{(2)}_{0} \ket{0} + \alpha^{(2)}_{1} \ket{1}\right)", r"+ \alpha^{(1)}_{1} \ket{1} \otimes \left(\alpha^{(2)}_{0} \ket{0} + \alpha^{(2)}_{1} \ket{1}\right)",
-        #                        font_size=28).next_to(ent_state2,DOWN,aligned_edge=LEFT,buff=0.25)
-        # prod_state_0b = MathTex(r"{{=}} {{\alpha^{(1)}_{0} \ket{0} }} \otimes {{\left(\alpha^{(2)}_{0} \ket{0} + \alpha^{(2)}_{1} \ket{1}\right)}} + {{\alpha^{(1)}_{1} \ket{1} }} \otimes {{\left(\alpha^{(2)}_{0} \ket{0} + \alpha^{(2)}_{1} \ket{1}\right)}}",
-        #                         font_size=28).next_to(ent_state2,DOWN,aligned_edge=LEFT,buff=0.25)
-        # prod_state = MathTex(r"{{=}} \left({{\alpha^{(1)}_{0} \ket{0} }} + {{\alpha^{(1)}_{1} \ket{1} }}\right) \otimes {{\left(\alpha^{(2)}_{0} \ket{0} + \alpha^{(2)}_{1} \ket{1}\right)}}",
-        #                      font_size=28).move_to(prod_state_0,aligned_edge=LEFT)
-        # prod_state_2 = MathTex(r"= \underbrace{\left(\alpha^{(1)}_{0} \ket{0} + \alpha^{(1)}_{1} \ket{1}\right)}_{\ket{\psi_1} } \otimes \underbrace{\left(\alpha^{(2)}_{0} \ket{0} + \alpha^{(2)}_{1} \ket{1}\right)}_{\ket{\psi_2} }",
-        #                      font_size=28).move_to(prod_state,aligned_edge=UP)
-
-        # self.play(LaggedStart(*[TransformMatchingShapes(ent_state[i], ent_state1b[i]) for i in range(5)], lag_ratio=0.25))
-
-        # self.play(LaggedStart(*[TransformMatchingShapes(ent_state1b[i+1], ent_state2[i]) for i in range(4)], lag_ratio=0.25))
-        
-        # ent_state2_copy = ent_state2.copy()
-
-        # self.play(LaggedStart(TransformMatchingShapes(VGroup(ent_state2_copy[0],ent_state2_copy[1]),prod_state_0[0]),
-        #                       TransformMatchingShapes(VGroup(ent_state2_copy[2],ent_state2_copy[3]),prod_state_0[1]),
-        #                       lag_ratio=0.25))
-        
-        # self.remove(prod_state_0, ent_state2_copy, *[prod_state_0[i] for i in range(2)], *[ent_state2_copy[i] for i in range(2)])
-        # self.add(prod_state_0b)
-
-        # self.play(TransformMatchingTex(prod_state_0b,prod_state))
-        # self.play(TransformMatchingShapes(prod_state,prod_state_2))
-
-        self.wait(1)
-
-
 class ALittleQuantum(Slide):
     def setup(self):
         theme = "Monokai Pro Light" # select a theme from https://iterm2colorschemes.com
@@ -304,6 +188,9 @@ class ALittleQuantum(Slide):
     def construct(self):
         title = FancyTitle("First, A Little Quantum")
         self.play(title.anim())
+
+        self.wait(0.1)
+        self.next_slide(notes="Even before we talk about quantum we look at the most basic unit of information. It can take one of two values: typically, 0 or 1.")
         
         slide_text_1 = Tex(r"{16cm}\textbf{Bit:} a \emph{bit}, \(x \in \{0,1\}\), takes one of two values.", 
                            font_size=28, tex_environment="minipage")
@@ -317,12 +204,12 @@ class ALittleQuantum(Slide):
         self.play(Write(slide_text_1), run_time=1)
 
         self.wait(0.1)
-        self.next_slide()
+        self.next_slide(notes="We can quantumize a bit into qubit. In short, it is a superposition of 0 and 1. Lets break that down.")
 
         self.play(Write(slide_text_2a), run_time=1)
 
         self.wait(0.1)
-        self.next_slide()
+        self.next_slide(notes="We have our bits. We turn them into ...")
 
         zero = MathTex(r"0").shift(LEFT*7)
         zero_copy = zero.copy()
@@ -345,34 +232,38 @@ class ALittleQuantum(Slide):
         lin_comb_text = Tex(r"Linear\\Combination",font_size=28).next_to(lin_comb, UP, buff=1)
         unit_vec_text = Tex(r"Unit Vector",font_size=28).next_to(lin_comb, DOWN, buff=0.1)
 
+        ast_text = MathTex(r"\ast", font_size=28,color=TEAL_D).move_to(unit_vec_const,aligned_edge=LEFT).shift(RIGHT*2+UP*0.25)
+        footnote_text = Tex(r"\(^\ast\bra{\psi}\ket{\varphi}\) is the inner product.",font_size=28,color=TEAL_D).to_corner(DR, buff=0.5)
+
         self.play(Write(zero), Write(one), Write(bit_text), run_time=0.5)
 
         self.wait(0.1)
-        self.next_slide()
+        self.next_slide(notes="We turn them into the so called computational basis vectors.")
 
         self.add(zero_copy,one_copy)
         self.play(TransformMatchingShapes(zero_copy,ket_zero),TransformMatchingShapes(one_copy,ket_one), Write(comp_basis_text), run_time=0.5)
 
         self.wait(0.1)
-        self.next_slide()
+        self.next_slide(notes="Which can be understood as vectors. Indeed we will use the bra-ket notation, where a ket, |v>, is a vectors.")
 
         self.add(ket_zero_copy,ket_one_copy)
         self.play(TransformMatchingShapes(ket_zero_copy,bmat_ket_zero), TransformMatchingShapes(ket_one_copy,bmat_ket_one), Write(vec_rep_text), run_time=0.5)
 
         self.wait(0.1)
-        self.next_slide()
+        self.next_slide(notes="A general quantum state takes the form of a linear combination. Here, we think of a superposition as represented by a linear combination.")
 
         self.play(Write(lin_comb), Write(lin_comb_text), run_time=0.5)
 
         self.wait(0.1)
-        self.next_slide()
+        self.next_slide(notes=r"that is a unit vector. Note the the <\psi| is called a bra, which is the same as a row vectors, or the conjugate transpose of the ket version (or, rather, a dual vector). Putting a bra and a ket together like this gives an inner product.")
 
         self.play(lin_comb.animate.shift(UP * 0.5), Write(unit_vec_const), Write(unit_vec_text), run_time=1)
+        self.play(Write(ast_text), Write(footnote_text))
 
         self.wait(0.1)
-        self.next_slide()
+        self.next_slide(notes="This gives us the following definition for a qubit.")
 
-        qubit_stuff = [one,ket_one,bmat_ket_one,zero,ket_zero,bmat_ket_zero,lin_comb,unit_vec_const,bit_text,comp_basis_text,vec_rep_text,lin_comb_text,unit_vec_text]
+        qubit_stuff = [one,ket_one,bmat_ket_one,zero,ket_zero,bmat_ket_zero,lin_comb,unit_vec_const,bit_text,comp_basis_text,vec_rep_text,lin_comb_text,unit_vec_text,ast_text,footnote_text]
         animations = [
             AnimationGroup(
                 item.animate.scale(0.1).move_to(slide_text_2a).set_opacity(0),
@@ -384,11 +275,12 @@ class ALittleQuantum(Slide):
         self.remove(*qubit_stuff)
 
         self.wait(0.1)
-        self.next_slide()
 
         ################# Tensor Product #########################
 
-        slide_text_3 = Tex(r"{16cm}\textbf{Multiple Qubits:} We represent two qubits with a \emph{tensor product}, \(\ket{\psi} \in \C^2 \otimes \C^2\).", 
+        self.next_slide(notes="Lets break that down.")
+
+        slide_text_3 = Tex(r"{16cm}\textbf{Multiple Qubits:} We represent two qubits with a \emph{tensor product}, \(\ket{\psi} \in \C^2 \otimes \C^2 \cong \C^4\).", 
                            font_size=28, tex_environment="minipage")
         slide_text_3_2 = Tex(r"{15.75cm} \(\rightarrow\) A two qubit state of the form \(\ket{\psi_1} \otimes \ket{\psi_2}\) is said to be a product state.", 
                            font_size=28, tex_environment="minipage")
@@ -420,7 +312,7 @@ class ALittleQuantum(Slide):
         abr_2qubit_state_text = Tex(r"Two-Qubit State",font_size=28).next_to(ent_state, UP, buff=0.5)
 
         self.wait(0.1)
-        self.next_slide()
+        self.next_slide(notes="classically, we understand multiple bits with the cartesian product. That is, the cartesian product gives us the set of all length 2 bit strings. As with the single qubit case, we assign to each string a computation basis vectors...")
 
         self.play(Write(cart_prod), Write(two_strings_text), run_time=0.5)
         self.add(cart_prod_copy)
@@ -428,7 +320,7 @@ class ALittleQuantum(Slide):
         self.play(TransformMatchingShapes(cart_prod_copy,cart_prod2),two_strings_text.animate.shift(RIGHT*2), run_time=0.5)
 
         self.wait(0.1)
-        self.next_slide()
+        self.next_slide(notes="As with the single qubit case, we assign to each string a computation basis vectors. We can decompose each computation basis vector into the tensor product of the individual computation basis vectors.")
 
         self.play(TransformMatchingShapes(cart_prod2_copy,tensor_prod), Write(comp_basis_2qubits_text), run_time=0.5)
         self.add(tensor_prod_part2_copy)
@@ -436,7 +328,7 @@ class ALittleQuantum(Slide):
         self.play(TransformMatchingShapes(tensor_prod_part2_copy,tensor_prod_part2_exp), run_time=0.5)
 
         self.wait(0.1)
-        self.next_slide()
+        self.next_slide(notes="All together, a state on two qubits is just a linear combination of the computation basis vectors.")
 
         self.play(Write(ent_state), Write(abr_2qubit_state_text), run_time=0.5)
         self.add(ent_state_1_copy)
@@ -444,7 +336,7 @@ class ALittleQuantum(Slide):
         self.play(TransformMatchingShapes(ent_state_1_copy,unit_vec_const_2))
 
         self.wait(0.1)
-        self.next_slide()
+        self.next_slide(notes = "lets break this down and look at a special case.")
 
         tensor_prod_stuff_1 = [
             cart_prod,
@@ -460,7 +352,7 @@ class ALittleQuantum(Slide):
         self.remove(*tensor_prod_stuff_1)
 
         self.wait(0.1)
-        self.next_slide()
+        self.next_slide(notes="If I change the scalars to be the following, we get something interesting.")
 
         ent_state1b = MathTex(r"\ket{\psi}", r"= \alpha^{(1)}_{0}\alpha^{(2)}_{0} \ket{00}", r"+ \alpha^{(1)}_{0}\alpha^{(2)}_{1} \ket{01}", r"+ \alpha^{(1)}_{1}\alpha^{(2)}_{0} \ket{10}", r"+ \alpha^{(1)}_{1}\alpha^{(2)}_{1} \ket{11}",
                              font_size=28).move_to(ent_state,aligned_edge=LEFT)
@@ -479,12 +371,12 @@ class ALittleQuantum(Slide):
         self.play(LaggedStart(*[TransformMatchingShapes(ent_state[i], ent_state1b[i]) for i in range(5)], lag_ratio=0.25))
 
         self.wait(0.1)
-        self.next_slide()
+        self.next_slide(notes="Lets expand it out.")
 
         self.play(LaggedStart(*[TransformMatchingShapes(ent_state1b[i+1], ent_state2[i]) for i in range(4)], lag_ratio=0.25))
 
         self.wait(0.1)
-        self.next_slide()
+        self.next_slide(notes="re-group.")
         
         ent_state2_copy = ent_state2.copy()
 
@@ -499,7 +391,7 @@ class ALittleQuantum(Slide):
         # self.play(LaggedStart(*[TransformMatchingShapes(ent_state3_copy[i], prod_state_0[i]) for i in range(3)], lag_ratio=0.25))
 
         self.wait(0.1)
-        self.next_slide()
+        self.next_slide(notes="re-group again.\nHere we notices something interesting. This is just a tensor product of two single qubit states.")
         self.remove(prod_state_0, ent_state2_copy, *[prod_state_0[i] for i in range(2)], *[ent_state2_copy[i] for i in range(2)])
         self.add(prod_state_0b)
 
@@ -512,7 +404,7 @@ class ALittleQuantum(Slide):
         self.play(Write(slide_text_3_2), run_time=0.5)
 
         self.wait(0.1)
-        self.next_slide()
+        self.next_slide(notes="So, in a sense, entanglement is a result of superpositions over multiple qubits/states.")
 
         self.play(Write(slide_text_3_3), run_time=0.5)
 
@@ -555,6 +447,48 @@ class ALittleQuantum(Slide):
         self.next_slide()
         self.play(Write(slide_text_7), run_time=0.5)
         self.wait(0.1)
+
+
+class ALittleQuantumVideo(Scene):
+    def setup(self):
+        theme = "Monokai Pro Light" # select a theme from https://iterm2colorschemes.com
+        apply_theme(manim_scene=self, theme_name=theme, light_theme=True) # use the theme
+
+
+    def construct(self):
+        cart_prod = MathTex(r"\{0,1\} \times \{0,1\}").shift(LEFT*5+UP*1.5)
+        cart_prod_copy = cart_prod.copy()
+        cart_prod2 = MathTex(r"=\{00,01,10,11\}").next_to(cart_prod, RIGHT, buff=0.2)
+        cart_prod2_copy = cart_prod2.copy()
+
+        tensor_prod = MathTex(r"\{\ket{00},\ket{01},",r"\ket{10},",r"\ket{11}\}").next_to(cart_prod2, RIGHT, buff=1)
+        tensor_prod_part2_copy = tensor_prod[1].copy()
+        tensor_prod_part2_exp = MathTex(r"\overbrace{\ket{10} = \ket{1} \otimes \ket{0}}").next_to(tensor_prod[1],DOWN,buff=0.25)
+
+        ent_state = MathTex(r"\ket{\psi}", r"= \alpha_{00} \ket{00}", r"+ \alpha_{01} \ket{01}", r"+ \alpha_{10} \ket{10}", r"+ \alpha_{11} \ket{11}").shift(DOWN * 1.5)
+        ent_state_1_copy = ent_state[0].copy()
+        unit_vec_const_2 = MathTex(r"\bra{\psi}\ket{\psi} = 1").next_to(ent_state[0],DOWN,buff=0.5).shift(RIGHT)
+
+        two_strings_text = Tex(r"Classical (2-Bit) Strings",font_size=28).next_to(cart_prod, UP, buff=0.5)
+        comp_basis_2qubits_text = Tex(r"Computational Basis",font_size=28).next_to(tensor_prod, UP, buff=0.5)
+        abr_2qubit_state_text = Tex(r"Two-Qubit State",font_size=28).next_to(ent_state, UP, buff=0.5)
+
+        self.play(Write(cart_prod), Write(two_strings_text), run_time=0.5)
+        self.add(cart_prod_copy)
+        self.wait(0.25)
+        self.play(TransformMatchingShapes(cart_prod_copy,cart_prod2),two_strings_text.animate.shift(RIGHT*2), run_time=0.5)
+
+        self.wait(0.25)
+
+        self.play(TransformMatchingShapes(cart_prod2_copy,tensor_prod), Write(comp_basis_2qubits_text), run_time=0.5)
+        self.add(tensor_prod_part2_copy)
+        self.play(TransformMatchingShapes(tensor_prod_part2_copy,tensor_prod_part2_exp), run_time=0.5)
+
+        self.play(Write(ent_state), Write(abr_2qubit_state_text), run_time=0.5)
+        self.add(ent_state_1_copy)
+        self.play(TransformMatchingShapes(ent_state_1_copy,unit_vec_const_2))
+
+        self.wait(1)
 
 
 class IntroToCSPs(Slide):
@@ -620,7 +554,7 @@ class MaxCutExample(Slide):
         self.play(title.anim())
 
         self.wait(0.1)
-        self.next_slide()
+        self.next_slide(notes="There is a local term for each edge that is the indicator function on whether the assignments to the two vertices are different.")
 
         slide_text_5 = Tex(r"{8cm}Max-Cut is a 2-local optimization problem defined over a graph, \(G = (V,E,w)\).", 
                            font_size=28, tex_environment="minipage")
@@ -646,7 +580,7 @@ class MaxCutExample(Slide):
         self.play(*[Write(item) for item in vertex_labels], run_time=0.25)
 
         self.wait(0.1)
-        self.next_slide()
+        self.next_slide(notes="We consider the following example.")
 
         cut = [1,3,5]
 
@@ -677,18 +611,18 @@ class MaxCutExample(Slide):
             if (e[0] in cut and e[1] not in cut) or (e[0] not in cut and e[1] in cut):
                 self.play(emob.animate.set_color(RED), run_time=(0.2))
 
-        edges_vgroup = VGroup(*[emob for e, emob in G.edges.items() if  (e[0] in cut and e[1] not in cut) or (e[0] not in cut and e[1] in cut)])
+        edges_vgroup = VGroup(*[emob for e, emob in G.edges.items() if (e[0] in cut and e[1] not in cut) or (e[0] not in cut and e[1] in cut)])
         edges_vgroup_copy = edges_vgroup.copy()
 
         self.play(Transform(edges_vgroup_copy,eval_example[1]))
 
         self.wait(0.1)
         self.next_slide()
-        self.remove(edges_vgroup_copy) # this is a bit annoying but necassary
+        self.remove(edges_vgroup_copy) # this is a bit annoying but necessary
 
         self.play(eval_example.animate.next_to(cut_vec_x, RIGHT, buff=0.5))
 
-        slide_text_7 = Tex(r"{8cm}Key take away: each \(\calC_e\) is an observable property of the assignment \(x\); whether the edge \(e\) is cut or not.", 
+        slide_text_7 = Tex(r"{8cm}Key take away: each \(\calC_e\) is an observable property of the assignment \(x\): whether the edge \(e\) is cut or not.", 
                            font_size=28, tex_environment="minipage")
         slide_text_7.next_to(slide_text_5, DOWN, aligned_edge=LEFT, buff=3)     
 
@@ -759,6 +693,7 @@ class MaxCutExampleVideo(Scene):
         self.wait(1)
 
 
+# IDK how to fix it, but this is a bad slide. 
 class IntroToLHPs(Slide):
     def setup(self):
         theme = "Monokai Pro Light" # select a theme from https://iterm2colorschemes.com
@@ -771,8 +706,8 @@ class IntroToLHPs(Slide):
         slide_text_1 = r"Find a string, \(x \in [d]^n\), that maximizes some \(k\)-local objective: $\calC(x) = \sum_\alpha \mathcal{C}_\alpha(x)$."
         slide_text_2 = r"\(\rightarrow\) Each \(\calC_\alpha: [d]^n \to \R\) encodes some observable property of the string, \(x \in [d]^n\)."
         slide_text_3 = r"We can represent \(\calC_\alpha: [d]^n \to \R\) as a diagonal matrix, \(\calC_\alpha \in M_{d^n}(\C)\) (moreover, \(\calC = \sum_\alpha \calC_\alpha\))."
-        slide_text_4 = r"\(\rightarrow\) We then have that \(\calC(x) = \bra{x}\calC\ket{x}\) and \(\max_x(\calC(x)) = \eig_{\max}(\calC)\)"
-        slide_text_5 = r"\(\rightarrow\) Goal: Find a string. \(x \in [d]^n\), that optimizes: \(\bra{x}\calC \ket{x}\)."
+        slide_text_4 = r"\(\rightarrow\) We then have that \(\calC(x) = \bra{x}\calC\ket{x}\) and \(\max_x(\calC(x)) = \eig_{\max}(\calC)\)."
+        slide_text_5 = fr"\(\rightarrow\) {{\color[HTML]{{{GREEN_E.to_hex()[1:]}}}Goal}}: Find a string, \(x \in [d]^n\), that optimizes: \(\bra{{x}}\calC \ket{{x}}\)."
         
         slide_text_1_mo = Tex(f"{{16cm}}{slide_text_1}", 
                            font_size=28, tex_environment="minipage")
@@ -783,7 +718,7 @@ class IntroToLHPs(Slide):
 
         slide_text_3_mo = Tex(f"{{16cm}}{slide_text_3}", 
                            font_size=28, tex_environment="minipage")
-        slide_text_3_mo.next_to(slide_text_2_mo, DOWN, aligned_edge=LEFT, buff=0.25).shift(LEFT * 0.25)
+        slide_text_3_mo.next_to(slide_text_2_mo, DOWN, aligned_edge=LEFT, buff=0.25).shift(LEFT * 0.25+DOWN*0.25)
 
         slide_text_4_mo = Tex(f"{{15cm}}{slide_text_4}", 
                            font_size=28, tex_environment="minipage")
@@ -796,13 +731,13 @@ class IntroToLHPs(Slide):
         self.play(title.anim())
 
         self.wait(0.1)
-        self.next_slide()
+        self.next_slide(notes="Recall where we left off with classical optimization.")
 
         self.play(Write(slide_text_1_mo), run_time=0.5)
         self.play(Write(slide_text_2_mo), run_time=0.5)
 
         self.wait(0.1)
-        self.next_slide()
+        self.next_slide(notes="we just put the value into the diagonal entry indexed by the strings.")
 
         self.play(Write(slide_text_3_mo), run_time = 0.5)
 
@@ -824,7 +759,7 @@ class IntroToLHPs(Slide):
         self.play(Write(C_alpha_diag_mat))
 
         self.wait(0.1)
-        self.next_slide()
+        self.next_slide(notes="Indeed, this means the value is just quadratic form of the computation basis vector. Moreover, we have turned this optimization problem into an eigenvalue problem.")
 
         self.play(Write(slide_text_4_mo), run_time=0.5)
 
@@ -834,23 +769,23 @@ class IntroToLHPs(Slide):
         self.play(Write(slide_text_5_mo), run_time=0.5)
 
         self.wait(0.1)
-        self.next_slide()
+        self.next_slide("We can note introduce the LHP, the quantum version of optimization")
 
         self.play(Unwrite(C_alpha_diag_mat), run_time=0.5)
 
-        slide_text_1b_mo = Tex(f"{{8cm}}{slide_text_1}", 
+        slide_text_1b_mo = Tex(fr"{{8cm}}\RaggedRight{{{slide_text_1}}}", 
                            font_size=28, tex_environment="minipage")
-        slide_text_2b_mo = Tex(f"{{7.75cm}}{slide_text_2}", 
+        slide_text_2b_mo = Tex(fr"{{7.75cm}}\RaggedRight{{{slide_text_2}}}", 
                            font_size=28, tex_environment="minipage")
-        slide_text_3b_mo = Tex(f"{{8cm}}{slide_text_3}", 
+        slide_text_3b_mo = Tex(fr"{{8cm}}\RaggedRight{{{slide_text_3}}}", 
                            font_size=28, tex_environment="minipage")
-        slide_text_4b_mo = Tex(f"{{7.75cm}}{slide_text_4}", 
+        slide_text_4b_mo = Tex(fr"{{7.75cm}}\RaggedRight{{{slide_text_4}}}", 
                            font_size=28, tex_environment="minipage")
-        slide_text_5b_mo = Tex(f"{{7.75cm}}{slide_text_5}", 
+        slide_text_5b_mo = Tex(fr"{{7.75cm}}\RaggedRight{{{slide_text_5}}}", 
                            font_size=28, tex_environment="minipage")
         slide_text_1b_mo.to_corner(UL, buff=0.5).shift(DOWN)
         slide_text_2b_mo.next_to(slide_text_1b_mo, DOWN, aligned_edge=LEFT, buff=0.25).shift(RIGHT * 0.25)
-        slide_text_3b_mo.next_to(slide_text_2b_mo, DOWN, aligned_edge=LEFT, buff=0.25).shift(LEFT * 0.25)
+        slide_text_3b_mo.next_to(slide_text_2b_mo, DOWN, aligned_edge=LEFT, buff=0.25).shift(LEFT * 0.25+DOWN*0.25)
         slide_text_4b_mo.next_to(slide_text_3b_mo, DOWN, aligned_edge=LEFT, buff=0.25).shift(RIGHT * 0.25)
         slide_text_5b_mo.next_to(slide_text_4b_mo, DOWN, aligned_edge=LEFT, buff=0.25)
 
@@ -875,57 +810,80 @@ class IntroToLHPs(Slide):
         self.play(title.line.animate.put_start_and_end_on(title.line.get_start(),title.line.get_end()+RIGHT*5.5), Create(line), Write(slide_title_1b), run_time=0.5)
 
         self.wait(0.1)
-        self.next_slide()
+        self.next_slide(notes="Here we generalize the notion on the left, that observables are represented by diagonal matrices, with the full quantum version that they need only be diagonalizable or rather self-adjoint.")
 
         box1 = SurroundingRectangle(slide_text_3b_mo, color=GOLD, buff=0.1)
         box2 = SurroundingRectangle(slide_text_4b_mo, color=GOLD, buff=0.1)
         box3 = SurroundingRectangle(slide_text_5b_mo, color=GOLD, buff=0.1)
 
-        slide_text_5 = r"We represent local terms \(H_\alpha \in M_{d^n}(\C)\) as diagonalizable/self-adjoint matrices, called quantum observables (or Hamiltonians)."
-        slide_text_6 = r"\(\rightarrow\) The full problem Hamiltonian is then the sum, \(H = \sum_{\alpha} H_\alpha\)."
-        slide_text_7 = r"\(\rightarrow\) We have that \(\max_{\ket{\psi}}(\bra{\psi}H\ket{\psi}) = \eig_{\max}(H)\)."
-        slide_text_8 = r"\(\rightarrow\) Goal: Find a state, \(\ket{\psi} \in (\C^d)^{\otimes n}\), that optimizes: \(\bra{\psi}H\ket{\psi} = \sum_\alpha \bra{\psi}H_\alpha\ket{\psi}\), which is called the energy of \(\ket{\psi}\)."
-        slide_text_9 = r"\(\rightarrow\) \(H\) is said to be \(k\)-local if each \(H_\alpha\) acts as the identity on all but \(k\) qudits."
+        slide_text_5 = r"We represent local terms as matrices with real eigenvalues, \(H_\alpha \in M_{d^n}(\C)\), called \emph{quantum observables} (or \emph{Hamiltonians})."
+        slide_text_6 = r"\(\rightarrow\) The full problem Hamiltonian is: \(H = \sum_{\alpha} H_\alpha\)."
+        slide_text_7 = r"\(\rightarrow\) For a state, \(\ket{\psi} \in (\C^d)^{\otimes n}\), we call \begin{center}\(\bra{\psi}H\ket{\psi} = \sum_\alpha \bra{\psi}H_\alpha\ket{\psi}\)\end{center} the \emph{energy} of \(\ket{\psi}\)."
+        slide_text_7b = r"\(\rightarrow\) We have that \(\max_{\ket{\psi}}(\bra{\psi}H\ket{\psi}) = \eig_{\max}(H)\)."
+        slide_text_8 = fr"\(\rightarrow\) {{\color[HTML]{{{GREEN_E.to_hex()[1:]}}}Goal}}: Find a state, \(\ket{{\psi}} \in (\C^d)^{{\otimes n}}\), that optimizes the energy, \(\bra{{\psi}}H\ket{{\psi}}\)."
+        slide_text_9 = r"\(H\) is said to be \(k\)-local if each \(H_\alpha\) acts as the identity on all but \(k\) qudits."
 
-        slide_text_5_mo = Tex(f"{{8cm}}{slide_text_5}", 
+        slide_text_5_mo = Tex(fr"{{8cm}}\RaggedRight{{{slide_text_5}}}", 
                            font_size=28, tex_environment="minipage")
-        slide_text_6_mo = Tex(f"{{7.75cm}}{slide_text_6}", 
+        slide_text_6_mo = Tex(fr"{{7.75cm}}\RaggedRight{{{slide_text_6}}}", 
                            font_size=28, tex_environment="minipage")
-        slide_text_7_mo = Tex(f"{{7.75cm}}{slide_text_7}", 
+        slide_text_7_mo = Tex(fr"{{7.75cm}}\RaggedRight{{{slide_text_7}}}", 
                            font_size=28, tex_environment="minipage")
-        slide_text_8_mo = Tex(f"{{7.75cm}}{slide_text_8}", 
+        slide_text_7b_mo = Tex(fr"{{7.75cm}}\RaggedRight{{{slide_text_7b}}}", 
                            font_size=28, tex_environment="minipage")
-        slide_text_9_mo = Tex(f"{{7.75cm}}{slide_text_9}", 
+        slide_text_8_mo = Tex(fr"{{7.75cm}}\RaggedRight{{{slide_text_8}}}", 
+                           font_size=28, tex_environment="minipage")
+        slide_text_9_mo = Tex(fr"{{7.75cm}}\RaggedRight{{{slide_text_9}}}", 
                            font_size=28, tex_environment="minipage")
         slide_text_5_mo.to_corner(UL, buff=0.5).shift(DOWN).shift(RIGHT*8)
         slide_text_6_mo.next_to(slide_text_5_mo, DOWN, aligned_edge=LEFT, buff=0.25).shift(RIGHT * 0.25)
         slide_text_7_mo.next_to(slide_text_6_mo, DOWN, aligned_edge=LEFT, buff=0.25)
-        slide_text_8_mo.next_to(slide_text_7_mo, DOWN, aligned_edge=LEFT, buff=0.25)
-        slide_text_9_mo.next_to(slide_text_8_mo, DOWN, aligned_edge=LEFT, buff=0.25)
+        slide_text_7b_mo.next_to(slide_text_7_mo, DOWN, aligned_edge=LEFT, buff=0.25)
+        slide_text_8_mo.next_to(slide_text_7b_mo, DOWN, aligned_edge=LEFT, buff=0.25)
+        slide_text_9_mo.next_to(slide_text_8_mo, DOWN, aligned_edge=LEFT, buff=0.25).shift((LEFT + DOWN) * 0.25)
 
-        self.play(Create(box1), Write(slide_text_5_mo), run_time=0.5)
+        arrow1 = Arrow(start=slide_text_3b_mo.get_edge_center(RIGHT)+RIGHT*0.25, end=slide_text_5_mo.get_edge_center(LEFT)+LEFT*0.25,tip_length=0.2,color=GOLD,stroke_width=4)
+        arrow2 = Arrow(start=slide_text_3b_mo.get_edge_center(RIGHT)+RIGHT*0.25, end=slide_text_6_mo.get_edge_center(LEFT)+LEFT*0.25,tip_length=0.2,color=GOLD,stroke_width=4)
+        arrow3 = Arrow(start=slide_text_4b_mo.get_edge_center(RIGHT)+RIGHT*0.25, end=slide_text_7_mo.get_edge_center(LEFT)+LEFT*0.25,tip_length=0.2,color=GOLD,stroke_width=4)
+        arrow3b = Arrow(start=slide_text_4b_mo.get_edge_center(RIGHT)+RIGHT*0.25, end=slide_text_7b_mo.get_edge_center(LEFT)+LEFT*0.25,tip_length=0.2,color=GOLD,stroke_width=4)
+        arrow4 = Arrow(start=slide_text_5b_mo.get_edge_center(RIGHT)+RIGHT*0.25, end=slide_text_8_mo.get_edge_center(LEFT)+LEFT*0.25,tip_length=0.2,color=GOLD,stroke_width=4)
+
+        self.play(LaggedStart(Create(box1,run_time=0.5), GrowArrow(arrow1), Write(slide_text_5_mo,run_time=0.5), lag_ratio=0.5))
+
+        self.wait(0.1)
+        self.next_slide(notes="We call this the Hamiltonian and the H_alpha's the local hamiltonians.")
+
+        self.play(LaggedStart(Transform(arrow1,arrow2,run_time=0.5), Write(slide_text_6_mo, run_time=0.5),lag_ratio=0.5))
+        self.remove(arrow1,arrow2)
+        self.add(arrow2)
+
+        self.wait(0.1)
+        self.next_slide(notes="the quantity of most importance is teh quadratic form, which we call the energy. Instead of taking the quadratic form over only computation basis vectors we consider arbitrary states.")
+
+        self.play(LaggedStart(AnimationGroup(Uncreate(arrow2, run_time=0.5), Uncreate(box1, run_time=0.5), Create(box2, run_time=0.5)),
+                              GrowArrow(arrow3, run_time=0.5), 
+                              Write(slide_text_7_mo, run_time=0.5), lag_ratio=0.5))
+        
+        self.wait(0.1)
+        self.next_slide()
+
+        self.play(LaggedStart(Transform(arrow3,arrow3b,run_time=0.5), Write(slide_text_7b_mo, run_time=0.5),lag_ratio=0.5))
+        self.remove(arrow3,arrow3b)
+        self.add(arrow3b)
+
+        self.wait(0.1)
+        self.next_slide(notes="the quantity of most importance is teh quadratic form, which we call the energy. Instead of taking the quadratic form over only computation basis vectors we consider arbitrary states.")
+
+        # self.play(Create(box2, rate_func=lambda t: 1 - t), Create(box3), Write(slide_text_8_mo), run_time=0.5)
+        self.play(LaggedStart(AnimationGroup(Uncreate(arrow3b, run_time=0.5), Uncreate(box2, run_time=0.5), Create(box3, run_time=0.5)),
+                              GrowArrow(arrow4, run_time=0.5), 
+                              Write(slide_text_8_mo, run_time=0.5), lag_ratio=0.5))
+        self.wait(0.1)
 
         self.wait(0.1)
         self.next_slide()
 
-        self.play(Write(slide_text_6_mo), run_time=0.5)
-
-        self.wait(0.1)
-        self.next_slide()
-
-        self.play(Create(box1, rate_func=lambda t: 1 - t), Create(box2), Write(slide_text_7_mo), run_time=0.5)
-        self.wait(0.1)
-
-        self.wait(0.1)
-        self.next_slide()
-
-        self.play(Create(box2, rate_func=lambda t: 1 - t), Create(box3), Write(slide_text_8_mo), run_time=0.5)
-        self.wait(0.1)
-
-        self.wait(0.1)
-        self.next_slide()
-
-        self.play(Create(box3, rate_func=lambda t: 1 - t), Write(slide_text_9_mo), run_time=0.5)
+        self.play(Uncreate(arrow4), Uncreate(box3), Write(slide_text_9_mo), run_time=0.5)
         self.wait(0.1)
 
 
@@ -940,11 +898,11 @@ class QuantumMaxCut(Slide):
         self.play(title.anim())
 
         self.wait(0.1)
-        self.next_slide()
+        self.next_slide(notes="Lets dissect this a little.")
 
         slide_text_1 = Tex(r"{8cm}Quantum Max-Cut is a 2-local Hamiltonian problem defined over a graph, \(G = (V,E,w)\).", 
                            font_size=28, tex_environment="minipage")
-        slide_text_2 = MathTex(r"H = \sum_{(a,b) \in E} w_{(a,b)} \overbrace{\frac{1}{2}\left(\ket{01}-\ket{10}\right)\left(\bra{01}-\bra{10}\right)^{ab} \otimes I^{[n]\setminus\{a,b\} } }^{H_{(a,b)}", font_size=28)
+        slide_text_2 = MathTex(r"H = \sum_{(a,b) \in E} w_{(a,b)} \overbrace{\frac{1}{2}\left(\ket{01}-\ket{10}\right)\left(\bra{01}-\bra{10}\right)^{ab} \otimes I^{[n]\setminus\{a,b\} } }^{h_{(a,b)}", font_size=28)
         slide_text_1.to_corner(UL, buff=0.5).shift(DOWN)
         slide_text_2.next_to(slide_text_1, DOWN, buff=0.5)
 
@@ -961,11 +919,11 @@ class QuantumMaxCut(Slide):
             for v in G.vertices
         ])
 
-        self.play(Write(slide_text_1), Write(slide_text_2), Create(G), run_time=1)
+        self.play(LaggedStart(Write(slide_text_1, run_time=1), Create(G, run_time=1), Write(slide_text_2, run_time=1), lag_ratio=0.5))
         self.play(*[Write(item) for item in vertex_labels], run_time=0.25)
 
         self.wait(0.1)
-        self.next_slide()
+        self.next_slide(notes="Lets dissect this a little. Recall Max-cut... We use this notation to denote the outer product.")
 
         slide_text_3 = Tex(r"{8cm}Recall, in Max-Cut, the local terms (as matrices), were projectors onto the ``different'' subspace: \(\Span\{\ket{01},\ket{10}\}\)", 
                            font_size=28, tex_environment="minipage")
@@ -977,16 +935,44 @@ class QuantumMaxCut(Slide):
         self.play(Write(slide_text_3),Write(slide_text_4), run_time=0.5)
 
         self.wait(0.1)
-        self.next_slide()
+        self.next_slide(notes="In QMC we not only want the state to be in the \"different\" subspace but we also want there to be this quantum anti-correlation between the two ways of being different. This is called the antisymmetric subspace and is of extreme important in the study of quantum information.")
 
         slide_text_5 = Tex(r"{8cm}In Quantum Max-Cut, the local terms are projectors onto the \emph{antisymmetric subspace} subspace: \(\Span\{\ket{01}-\ket{10}\}\)", 
                            font_size=28, tex_environment="minipage")
-        slide_text_6 = MathTex(r"H_{(a,b)} = \frac{1}{2}\left(\ket{01}-\ket{10}\right)\left(\bra{01}-\bra{10}\right)", 
+        slide_text_6 = MathTex(r"h_{(a,b)} = \frac{1}{2}\left(\ket{01}-\ket{10}\right)\left(\bra{01}-\bra{10}\right)", 
                            font_size=28)
         slide_text_5.next_to(slide_text_1, DOWN, aligned_edge=LEFT, buff=3).shift(RIGHT*8)
         slide_text_6.next_to(slide_text_5, DOWN, buff=0.5)
 
         self.play(Write(slide_text_5),Write(slide_text_6), run_time=0.5)
+        self.wait(0.1)
+
+
+class WhyCare(Slide):
+    def setup(self):
+        theme = "Monokai Pro Light" # select a theme from https://iterm2colorschemes.com
+        apply_theme(manim_scene=self, theme_name=theme, light_theme=True) # use the theme
+
+
+    def construct(self):
+        title = FancyTitle("Why Care About Approximations for LHPs")
+        self.play(title.anim())
+
+        slide_text_1 = r"1 Classically, we have developed a lot of tools and understanding for approximation algorithms."
+        slide_text_1a = r".a There are optimality results for certain algorithms (assuming UGC) [KKMO07]."
+
+        slide_text_2 = r"2 Quantumly, understanding the limits of approximation algorithms for local Hamiltonian problems (LHPs) is at the intersection of mathematics, theoretical computer science, and condensed matter physics."
+        slide_text_2a = r".a Approximations for LHPs are not well understood. For example there is no quantum PCP theorem (just a conjecture) [AAV13; NN24]."
+        slide_text_2b = r".b For LHP beyond qubits, there isn't a good candidate problem to study."
+        slide_text_2bi = r"...i A lot of things break down in the quantum setting in ways that are unlike the classical setting."
+
+        bullets = Bullets(slide_text_1,slide_text_1a,slide_text_2,slide_text_2a,slide_text_2b,slide_text_2bi,
+                          double_space_for_new_sections=True)
+        for _ in range(bullets.get_num_lines()):
+            self.wait(0.1)
+            self.next_slide()
+            self.play(bullets.write_next_line(run_time=0.5))
+
         self.wait(0.1)
 
 
@@ -1041,7 +1027,7 @@ class ALittleMoreQuantum(Slide):
 
         pure_state_text = Tex(r"Pure State",font_size=28).next_to(pure_state, UP, buff=0.5)
         convex_comb_states_text = Tex(r"Convex Combination",font_size=28).next_to(convex_comb_states, UP, buff=0.5)
-        posit_text = Tex(r"Postivity",font_size=28).next_to(non_neg_const_a, UP, buff=0.2)
+        posit_text = Tex(r"Positivity",font_size=28).next_to(non_neg_const_a, UP, buff=0.2)
         unit_tr_text = Tex(r"Unit Trace",font_size=28).next_to(non_sum_1_const_a, UP, buff=0.2)
 
         self.play(Write(pure_state), Write(pure_state_text),run_time=0.5)
@@ -1081,7 +1067,7 @@ class ALittleMoreQuantum(Slide):
         self.wait(0.1)
         self.next_slide()
 
-        slide_text_4 = Tex(r"{15.75cm}\(\rightarrow\) The energy of \(\rho\) is the ``expected'' energy over the pure states in the mixture: \\\begin{center}\(\Tr(\rho H) = \sum_i \lambda_i \Tr(\ket{\psi_i}\bra{\psi_i} H)\)\end{center}.", 
+        slide_text_4 = Tex(r"{15.75cm}\(\rightarrow\) The energy of \(\rho\) is the ``expected'' energy over the pure states in the mixture: \\\begin{center}\(\Tr(\rho H) = \sum_i \lambda_i \Tr(\ket{\psi_i}\bra{\psi_i} H)\)\end{center}", 
                            font_size=28, tex_environment="minipage")
         slide_text_4.next_to(slide_text_3b, DOWN, aligned_edge=LEFT, buff=0.25).shift(RIGHT * 0.25)
 
@@ -1090,16 +1076,16 @@ class ALittleMoreQuantum(Slide):
         self.wait(0.1)
         self.next_slide()
 
-        slide_text_5 = Tex(r"{15.75cm}\(\rightarrow\) Mixed states show up as marginals of pure states. Consider the marginal on the first qubit of the antisymmetric state.", 
+        slide_text_5 = Tex(r"{15.75cm}\(\rightarrow\) Mixed states show up as marginals of pure states. Consider the marginal on the first qubit of the\\\phantom{\(\rightarrow\)} antisymmetric state.", 
                            font_size=28, tex_environment="minipage")
-        slide_text_5.next_to(slide_text_4, DOWN, aligned_edge=LEFT, buff=0.25).shift(RIGHT * 0.25)
+        slide_text_5.next_to(slide_text_4, DOWN, aligned_edge=LEFT, buff=0.5)
 
         self.play(Write(slide_text_5), run_time=0.5)
 
         self.wait(0.1)
         self.next_slide()
 
-        singlet_state = MathTex(r"\rho = \frac{1}{2}({{\ket{01} }}-{{\ket{10} }})({{\bra{01} }}-{{\bra{10} }})",font_size=28).shift(DOWN*2.25)
+        singlet_state = MathTex(r"\rho = \frac{1}{2}({{\ket{01} }}-{{\ket{10} }})({{\bra{01} }}-{{\bra{10} }})",font_size=28).shift(DOWN*2)
 
         singlet_state_expanded = MathTex(r"\rho = \frac{1}{2}({{\ket{01} }}{{\bra{01} }} - {{\ket{01} }}{{\bra{10} }} - {{\ket{10} }}{{\bra{01} }} + {{\ket{10} }}{{\bra{10} }})",font_size=28).move_to(singlet_state)
         singlet_state_expanded_2 = MathTex(r"\rho = \frac{1}{2}(", r"\ket{01}\bra{01}", r"- \ket{01}\bra{10} - \ket{10}\bra{01} + \ket{10}\bra{10})",font_size=28).move_to(singlet_state)
@@ -1198,6 +1184,15 @@ class ALittleMoreQuantum(Slide):
 
         self.play(Write(max_mix_state),run_time=0.5)
         self.wait(0.1)
+        self.next_slide()
+
+        slide_text_6 = Tex(r"{15.75cm}\(\rightarrow\) A pure state is entangled exactly when its marginals are mixed.", 
+                           font_size=28, tex_environment="minipage")
+        slide_text_6.next_to(slide_text_5, DOWN, aligned_edge=LEFT, buff=2.5)
+
+        self.play(Write(slide_text_6),run_time=0.5)
+
+        self.wait(0.1)
 
 
 class ALittleMoreQuantum2(Slide):
@@ -1213,9 +1208,9 @@ class ALittleMoreQuantum2(Slide):
         self.wait(0.1)
         self.next_slide()
 
-        slide_text_1 = Tex(r"{16cm}\textbf{Maximally Entangled State:} A pure state, \(\ket{\psi}\bra{\psi}\), is said to be maximally entangled if its reduced marginals are the maxiamlly mixed state, \(\frac{1}{d} I = \frac{1}{d}\sum_{i \in [d]}\ket{i}\bra{i}\).", 
+        slide_text_1 = Tex(r"{16cm}\textbf{Maximally Entangled State:} A pure state, \(\ket{\psi}\bra{\psi}\), is said to be maximally entangled if its reduced marginals are the maximally mixed state, \(\frac{1}{d} I = \frac{1}{d}\sum_{i \in [d]}\ket{i}\bra{i}\).", 
                            font_size=28, tex_environment="minipage")
-        slide_text_2 = Tex(r"{16cm}\textbf{The Maximal Entanglement Problem:} We consider the 2-local Hamiltonian Problem, where each local term is a projector into a maximally entangled state, \(h_e = \ket{\psi_e}\bra{\psi_e}\).", 
+        slide_text_2 = Tex(r"{16cm}\textbf{The Maximal Entanglement Problem:} We consider the 2-local Hamiltonian Problem \emph{over qudits}, where each local term is a projector into a maximally entangled state, \(h_e = \ket{\psi_e}\bra{\psi_e}\) (\(\ket{\psi_e} \in (\C^d)^{\otimes 2}\)).", 
                            font_size=28, tex_environment="minipage")
         slide_text_3 = Tex(r"{16cm}\textbf{Monogamy of Entanglement:} The idea that one system cannot be maximally entangled to multiple other systems at the same time.", 
                            font_size=28, tex_environment="minipage")
@@ -1379,15 +1374,23 @@ class BabysFirstProofTheStarBound(Slide):
 
         slide_text_1 = MathTex(r"H_\bigstar = \sum_{a=2}^n \ket{\psi_a}\bra{\psi_a}^{1a}", 
                            font_size=28)
-        slide_text_2 = Tex(r"\textbf{Lemma:} \(\eig_{\max}(H_\bigstar) = \frac{n-1}{d}+\frac{d-1}{d}\), in particular,", r"\(\frac{n+d-2}{d}I - H_\bigstar\)", r"\(\succcurlyeq 0\).", 
+        slide_text_2 = Tex(r"\textbf{Lemma:} \(\eig_{\max}(H_\bigstar) = \frac{n-1}{d}+\frac{d-1}{d}\), in particular, ", r"\(\frac{n+d-2}{d}I - H_\bigstar\)", r"\(\succcurlyeq 0\).", 
                            font_size=28)
         slide_text_1.to_corner(UL, buff=0.5).shift(DOWN)
         slide_text_2.next_to(slide_text_1, DOWN, aligned_edge=LEFT, buff=0.25)
-        slide_text_2[1].set_color(TEAL_D)
         
         slide_text_1.to_corner(UL, buff=0.5).shift(DOWN)
         # slide_text_2.next_to(slide_text_1, DOWN, aligned_edge=LEFT, buff=0.25)
         # slide_text_3.next_to(slide_text_2, DOWN, aligned_edge=LEFT, buff=0.25)
+
+        base_line_text = Tex(r"Product state energy.", font_size=20, color=GREEN_E).next_to(slide_text_2,UP,aligned_edge=LEFT,buff=0.25).shift(RIGHT*3.4)
+        surplus_text = Tex(r"Must come from entanglement.", font_size=20, color=GREEN_E).next_to(base_line_text, RIGHT, buff=0.5).shift(LEFT*1.55)
+        
+        braces = Tex(r"\(\overbrace{\phantom{\frac{n-1}{d} } }\phantom{+}\overbrace{\phantom{\frac{d-1}{d} } }\)", font_size=22, color=GREEN_E).next_to(slide_text_2,UP,aligned_edge=LEFT,buff=0).shift(RIGHT*3.15)
+        
+        base_line_text.rotate(PI/8,about_point=base_line_text.get_corner(DL))
+        surplus_text.rotate(PI/8,about_point=surplus_text.get_corner(DL))
+
 
         self.wait(0.1)
         self.next_slide()
@@ -1398,6 +1401,13 @@ class BabysFirstProofTheStarBound(Slide):
         self.next_slide()
 
         self.play(Write(slide_text_2), run_time=0.5)
+
+        self.wait(0.1)
+        self.next_slide()
+
+        self.play(LaggedStart(Write(braces,run_time=0.5),
+                              Write(base_line_text,run_time=0.5),
+                              Write(surplus_text,run_time=0.5),lag_ratio=0.5))
 
         self.wait(0.1)
         self.next_slide()
@@ -1477,24 +1487,7 @@ class BabysFirstProofTheStarBound(Slide):
             item.animate.shift(RIGHT*2).set_opacity(0)
             for item in Hpow2_stuff
         ])
-        self.wait(0.25)
-
-        # star_bound_proof_6 = MathTex(r"\left(\frac{n+d-2}{d}I - H_\bigstar\right)^2", r"= \left(\frac{n+d-2}{d}\right)^2 - 2\left(\frac{n+d-2}{d}\right) H_\bigstar +", r"\left(H_\bigstar\right)^2",
-        #                              font_size=28).next_to(proof_text, DOWN, aligned_edge=LEFT, buff=0.25)
-        # star_bound_proof_7 = MathTex(r"\left(\frac{n+d-2}{d}I - H_\bigstar\right)^2", r"= \left(\frac{n+d-2}{d}\right)^2 - 2\left(\frac{n+d-2}{d}\right) H_\bigstar +", r"\left(\frac{n+d-2}{d}\right)H_\bigstar - \frac{2(d-1)}{d^2} \sum_{2 \leq a < b \leq n} P_{1ab}^{1ab}",
-        #                              font_size=28).next_to(star_bound_proof_6, DOWN, aligned_edge=LEFT, buff=0.25)
-        # star_bound_proof_7b = MathTex(r"{{\left(\frac{n+d-2}{d}I - H_\bigstar\right)^2}} = {{\left(\frac{n+d-2}{d}\right)^2}} - 2{{\left(\frac{n+d-2}{d}\right) H_\bigstar}} + {{\left(\frac{n+d-2}{d}\right)H_\bigstar}} - {{\frac{2(d-1)}{d^2} \sum_{2 \leq a < b \leq n} }} {{P_{1ab}^{1ab} }}",
-        #                              font_size=28).move_to(star_bound_proof_7)
-        # star_bound_proof_8 =  MathTex(r"{{\left(\frac{n+d-2}{d}I - H_\bigstar\right)^2}} = {{\left(\frac{n+d-2}{d}\right)}}\Bigg({{\left(\frac{n+d-2}{d}\right)}} - {{H_\bigstar}}\Bigg) - {{\frac{2(d-1)}{d^2} \sum_{2 \leq a < b \leq n} }} {{P_{1ab}^{1ab} }}",
-        #                              font_size=28).move_to(star_bound_proof_7b, aligned_edge=LEFT)
-        # star_bound_proof_8b =  MathTex(r"{{\left(\frac{n+d-2}{d}I - H_\bigstar\right)^2}} = {{\left(\frac{n+d-2}{d}\right)\Bigg(\left(\frac{n+d-2}{d}\right)}} - H_\bigstar\Bigg)}} - {{\frac{2(d-1)}{d^2} \sum_{2 \leq a < b \leq n} }} {{P_{1ab}^{1ab} }}",
-        #                              font_size=28).move_to(star_bound_proof_7b, aligned_edge=LEFT)
-        # star_bound_proof_9 =  MathTex(r"{{\left(\frac{n+d-2}{d}\right)\Bigg(\left(\frac{n+d-2}{d}\right) - H_\bigstar\Bigg)}} = {{\left(\frac{n+d-2}{d}I - H_\bigstar\right)^2}} + {{\frac{2(d-1)}{d^2} \sum_{2 \leq a < b \leq n} }} {{P_{1ab}^{1ab} }}",
-        #                              font_size=28).move_to(star_bound_proof_8, aligned_edge=LEFT)
-        # star_bound_proof_9b =  MathTex(r"\left(P_{1ab}^{1ab}\right)^2",
-        #                              font_size=28).move_to(star_bound_proof_9[-1], aligned_edge=LEFT)
-        # star_bound_proof_10 =  MathTex(r"\succcurlyeq 0",
-        #                              font_size=28).next_to(star_bound_proof_9b,RIGHT,buff=0.25)
+        self.wait(0.1)
 
         star_bound_proof_6 = MathTex(r"\Bigg({{\left(\frac{n+d-2}{d}\right)I - H_\bigstar}}\Bigg)^2", r"= \left(\frac{n+d-2}{d}\right)^2 - 2\left(\frac{n+d-2}{d}\right) H_\bigstar +", r"\left(H_\bigstar\right)^2",
                                      font_size=28).next_to(proof_text, DOWN, aligned_edge=LEFT, buff=0.25)
@@ -1522,42 +1515,7 @@ class BabysFirstProofTheStarBound(Slide):
         star_bound_proof_10 =  MathTex(r"\succcurlyeq 0",
                                      font_size=28).next_to(star_bound_proof_9b,RIGHT,buff=0.25)
         
-        # self.play(Write(star_bound_proof_6[0]), run_time = 0.25)
-
-        # self.wait(0.1)
-        # self.next_slide()
-
-        # self.play(Write(star_bound_proof_6[1:]), run_time = 0.5)
-
-        # self.wait(0.1)
-        # self.next_slide()
-
-        # star_bound_proof_6_copy = star_bound_proof_6.copy()
-        # self.add(star_bound_proof_6_copy)
-        # self.play(LaggedStart(Transform(star_bound_proof_6_copy[0],star_bound_proof_7[0]),
-        #                       Transform(star_bound_proof_6_copy[1],star_bound_proof_7[1]),
-        #                       AnimationGroup(Transform(star_bound_proof_5b[1],star_bound_proof_7[2]),FadeOut(star_bound_proof_5b[0],run_time=0.5)),lag_ratio=0.25))
-        # self.add(star_bound_proof_7b)
-        # self.remove(star_bound_proof_7,star_bound_proof_7[0],star_bound_proof_7[1],star_bound_proof_7[2],star_bound_proof_5b,star_bound_proof_5b[1],star_bound_proof_6_copy,star_bound_proof_6_copy[0],star_bound_proof_6_copy[1],star_bound_proof_6_copy[2])
-
-        # self.wait(0.1)
-        # self.next_slide()
-
-        # self.play(TransformMatchingTex(star_bound_proof_7b,star_bound_proof_8))
-        # self.add(star_bound_proof_8b)
-        # self.remove(star_bound_proof_8)
-        # self.wait(0.1)
-        # self.next_slide()
-
-        # self.play(TransformMatchingTex(star_bound_proof_8b,star_bound_proof_9))
-
-        # self.wait(0.1)
-        # self.next_slide()
-
-        # star_bound_proof_10a = MathTex(r"\succcurlyeq 0",font_size=28).next_to(star_bound_proof_9[2],DOWN,buff=0.25)
-        # star_bound_proof_10b = MathTex(r"\succcurlyeq 0",font_size=28).next_to(star_bound_proof_9[4],DOWN,buff=0.25).shift(RIGHT)
-
-        self.play(Write(star_bound_proof_6[0:3]), run_time = 0.25)
+        self.play(Write(star_bound_proof_6[0:3]),slide_text_2[1].animate.set_color(TEAL_D), run_time = 0.25)
 
         self.wait(0.1)
         self.next_slide()
@@ -1623,7 +1581,7 @@ class AnAlgorithmForME(Slide):
 
 
     def construct(self):
-        title = FancyTitle("An Algorithm For The Maximal Entanglement Problem")
+        title = FancyTitle("An Algorithm For the Maximal Entanglement Problem")
         self.play(title.anim())
 
         self.wait(0.1)
@@ -1637,7 +1595,7 @@ class AnAlgorithmForME(Slide):
         algo = r"""\textbf{Algorithm:} \emph{Input:} Graph, \(G=(V,E,w)\), and local Hamiltonians, \(h_e\).
             \begin{enumerate}
                 \item Find the maximum matching of \(G\),  denoted by \(m : E \to \{0,1\}\). 
-                \item \emph{Output:} \(\displaystyle\rho\coloneq \!\!\!\!\!\! \bigotimes_{\substack{(a,b) \in E:\\ m((a,b)) = 1}}\!\!\!\!h_{ab}^{ab} \otimes \!\!\!\!\!\!\!\!\bigotimes_{\substack{c \in V:\\\forall d \in V : m((c,d))=0}} \!\!\!\!\!\!\!\! \frac{1}{d}I^c\)
+                \item \emph{Output:} \(\displaystyle\rho = \bigotimes_{(a,b) \in m} h_{ab}^{ab} \otimes \bigotimes_{c \notin m} \frac{1}{d}I^c\)
             \end{enumerate}
         """
 
@@ -1651,7 +1609,7 @@ class AnAlgorithmForME(Slide):
 
         algo_mo = Tex(f"{{16cm}}{algo}", font_size=28, tex_environment="minipage").next_to(slide_text_4_mo, DOWN, aligned_edge=LEFT, buff=0.5)
 
-        slide_text_5_mo = Tex(f"{{5.75cm}}{slide_text_5}", font_size=28, tex_environment="minipage").next_to(algo_mo, RIGHT, buff=1)
+        slide_text_5_mo = Tex(f"{{5.75cm}}{slide_text_5}", font_size=28, tex_environment="minipage").next_to(algo_mo, RIGHT, buff=1).shift(DOWN*0.4)
 
         algo_surrbox = SurroundingRectangle(algo_mo, buff=0.2, color=BLACK)
         
@@ -1685,7 +1643,7 @@ class AnAlgorithmForME(Slide):
             corner_radius=0.2,
             stroke_color=GOLD,
             fill_color=GOLD,
-            fill_opacity=0.15,
+            fill_opacity=0.5,
         ).move_to(G.edges[(2,3)].get_center()).rotate(G.edges[(2,3)].get_angle() + PI).shift(0.1 * rotate_vector(UP, G.edges[(2,3)].get_angle() + PI))
 
         surrbox2 = RoundedRectangle(
@@ -1694,7 +1652,7 @@ class AnAlgorithmForME(Slide):
             corner_radius=0.2,
             stroke_color=GOLD,
             fill_color=GOLD,
-            fill_opacity=0.15,
+            fill_opacity=0.5,
         ).move_to(G.edges[(1,5)].get_center()).rotate(G.edges[(1,5)].get_angle()).shift(0.1 * rotate_vector(UP, G.edges[(1,5)].get_angle()))
 
         prob_ham = MathTex(r"H = \sum_{ab \in E} w_{ab} h_{ab}", font_size=28).next_to(G,DOWN,buff=0.5)
@@ -1730,10 +1688,31 @@ class AnAlgorithmForME(Slide):
         self.wait(0.1)
         self.next_slide()
 
-        max_mix_1 = MathTex(r"\frac{1}{d}I",color=GOLD).next_to(G[4], LEFT*0.1).scale(0.5)
-        max_mix_2 = MathTex(r"\frac{1}{d}I",color=GOLD).next_to(G[6], UP*0.1).scale(0.5)
+        max_mix_1 = MathTex(r"\frac{1}{d}I",font_size=24,color=GOLD).next_to(G[4], LEFT*0.1)
+        max_mix_2 = MathTex(r"\frac{1}{d}I",font_size=24,color=GOLD).next_to(G[6], UP*0.1)
 
-        self.play(LaggedStart(DrawBorderThenFill(surrbox1), DrawBorderThenFill(surrbox2), Write(max_mix_1), Write(max_mix_2), lag_ratio=0.25))
+        rho_eq_text = MathTex(r"\rho =",font_size=34,color=GOLD).next_to(G,LEFT,buff=0.45).shift(UP*0.45)
+
+        self.bring_to_front(G,*vertex_labels,*edge_labels)
+        self.play(LaggedStart(Write(rho_eq_text), DrawBorderThenFill(surrbox1), DrawBorderThenFill(surrbox2), Write(max_mix_1), Write(max_mix_2), lag_ratio=0.25))
+
+        rho_copy = rho_eq_text.copy()
+        max_mix_1_copy = max_mix_1.copy()
+        max_mix_2_copy = max_mix_2.copy()
+        surrbox1_copy = surrbox1.copy()
+        surrbox2_copy = surrbox2.copy()
+        self.add(rho_copy,max_mix_1_copy,max_mix_2_copy,surrbox1_copy,surrbox2_copy)
+
+        rho_text = MathTex(r"{{\rho =}}{{h_{15}^{15}}} \otimes {{h_{23}^{23}}} \otimes {{\frac{1}{d}I^4}} \otimes {{\frac{1}{d} I^6}}",
+                           color=GOLD,font_size=28).move_to(prob_ham,aligned_edge=UP)
+
+        self.play(LaggedStart(prob_ham.animate.next_to(prob_ham,DOWN,buff=0.25),
+                              Transform(rho_copy,rho_text[0]),
+                              Transform(surrbox2_copy,rho_text[1]),
+                              AnimationGroup(Transform(surrbox1_copy,rho_text[3]),Write(rho_text[2])),
+                              AnimationGroup(Transform(max_mix_1_copy,rho_text[5]),Write(rho_text[4])),
+                              AnimationGroup(Transform(max_mix_2_copy,rho_text[7]),Write(rho_text[6])),
+                              lag_ratio=0.5))
 
         self.wait(0.1)
         self.next_slide()
@@ -1778,7 +1757,7 @@ class AnAlgorithmForMEVideo(Scene):
             corner_radius=0.2,
             stroke_color=GOLD,
             fill_color=GOLD,
-            fill_opacity=0.15,
+            fill_opacity=0.5,
         ).move_to(G.edges[(2,3)].get_center()).rotate(G.edges[(2,3)].get_angle() + PI).shift(0.1 * rotate_vector(UP, G.edges[(2,3)].get_angle() + PI))
 
         surrbox2 = RoundedRectangle(
@@ -1787,7 +1766,7 @@ class AnAlgorithmForMEVideo(Scene):
             corner_radius=0.2,
             stroke_color=GOLD,
             fill_color=GOLD,
-            fill_opacity=0.15,
+            fill_opacity=0.5,
         ).move_to(G.edges[(1,5)].get_center()).rotate(G.edges[(1,5)].get_angle()).shift(0.1 * rotate_vector(UP, G.edges[(1,5)].get_angle()))
 
         prob_ham = MathTex(r"H = \sum_{ab \in E} w_{ab} h_{ab}").next_to(G,DOWN,buff=0.5)
@@ -1799,8 +1778,31 @@ class AnAlgorithmForMEVideo(Scene):
 
         max_mix_1 = MathTex(r"\frac{1}{d}I",color=GOLD).next_to(G[4], LEFT*0.1).scale(0.5)
         max_mix_2 = MathTex(r"\frac{1}{d}I",color=GOLD).next_to(G[6], UP*0.1).scale(0.5)
+        
+        rho_eq_text = MathTex(r"\rho =",color=GOLD).next_to(G,LEFT,buff=0.45)
 
-        self.play(LaggedStart(DrawBorderThenFill(surrbox1,run_time=0.5), DrawBorderThenFill(surrbox2,run_time=0.5), Write(max_mix_1,run_time=0.25), Write(max_mix_2,run_time=0.25), lag_ratio=0.25))
+        self.bring_to_front(G,*vertex_labels,*edge_labels)
+        self.play(LaggedStart(Write(rho_eq_text), DrawBorderThenFill(surrbox1,run_time=0.5), DrawBorderThenFill(surrbox2,run_time=0.5), Write(max_mix_1,run_time=0.25), Write(max_mix_2,run_time=0.25), lag_ratio=0.25))
+
+        rho_copy = rho_eq_text.copy()
+        max_mix_1_copy = max_mix_1.copy()
+        max_mix_2_copy = max_mix_2.copy()
+        surrbox1_copy = surrbox1.copy()
+        surrbox2_copy = surrbox2.copy()
+        self.add(rho_copy,max_mix_1_copy,max_mix_2_copy,surrbox1_copy,surrbox2_copy)
+
+        rho_text = MathTex(r"{{\rho =}}{{h_{15}^{15}}} \otimes {{h_{23}^{23}}} \otimes {{\frac{1}{d}I^4}} \otimes {{\frac{1}{d} I^6}}",
+                           color=GOLD,font_size=28).move_to(prob_ham,aligned_edge=UP)
+
+        self.play(LaggedStart(prob_ham.animate.next_to(prob_ham,DOWN,buff=0.25),
+                              Transform(rho_copy,rho_text[0]),
+                              Transform(surrbox2_copy,rho_text[1]),
+                              Transform(surrbox1_copy,rho_text[3]),
+                              Transform(max_mix_1_copy,rho_text[5]),
+                              Transform(max_mix_2_copy,rho_text[7]),
+                              AnimationGroup(Write(rho_text[2]),
+                                             Write(rho_text[4]),
+                                             Write(rho_text[6]))))
 
         self.wait(1)
 
@@ -1822,7 +1824,7 @@ class CSPsOverDistributions(Slide):
         slide_text_2 = r"We need to relax the problem somehow."
         slide_text_3 = r"\(\rightarrow\) We optimize over distributions of strings."
         slide_text_4 = r"\(\rightarrow\) Observe that the expectation only depends on the marginal distribution, \(\mu^{ab}\)."
-        slide_text_5 = r"\(\rightarrow\) We relax the notion of a distribution to only be consistant on low-degree marginals and their interaction."
+        slide_text_5 = r"\(\rightarrow\) We relax the notion of a distribution to only be consistent on low-degree marginals/moments and their interaction."
         
         slide_text_1_mo = Tex(f"{{11cm}}{slide_text_1}", font_size=28, tex_environment="minipage").to_corner(UL, buff=0.5).shift(DOWN)
         slide_text_2_mo = Tex(f"{{11cm}}{slide_text_2}", font_size=28, tex_environment="minipage").next_to(slide_text_1_mo, DOWN, aligned_edge=LEFT, buff=0.25)
@@ -1950,7 +1952,7 @@ class ALittleSOS(Slide):
     def construct(self):
         title = FancyTitle("Pseudo-Distributions and SDPs")
 
-        slide_text_1 = r"We relax the notion of a distribution to only be consistant on low-degree marginals and their interaction."
+        slide_text_1 = r"We relax the notion of a distribution to only be consistent on low-degree marginals/moments and their interaction."
         
         slide_text_0_mo = Tex(f"{{10.75cm}}\\(\\rightarrow\\) {slide_text_1}", font_size=28, tex_environment="minipage").to_corner(UL, buff=0.5).shift(DOWN*3.75+RIGHT*0.25)
 
@@ -2161,7 +2163,7 @@ class ALittleMoreSOS(Slide):
     def construct(self):
         title = FancyTitle("Pseudo-Distributions and SDPs")
 
-        slide_text_1 = r"We relax the notion of a distribution to only be consistant on low-degree marginals and their interaction."
+        slide_text_1 = r"We relax the notion of a distribution to only be consistent on low-degree marginals/moments and their interaction."
         
         slide_text_1_mo = Tex(f"{{16cm}}{slide_text_1}", font_size=28, tex_environment="minipage").to_corner(UL, buff=0.5).shift(DOWN)
 
@@ -2236,7 +2238,7 @@ class ALittleMoreSOS(Slide):
         self.wait(0.1)
         self.next_slide()
 
-        sdp_text = Tex("Efficiently Solvable SDP",font_size=28).next_to(surrbox6,DOWN,buff=0.25)
+        sdp_text = Tex("Efficiently Solvable SDP",font_size=28,color=GOLD).next_to(surrbox6,DOWN,buff=0.25)
         self.play(Write(sdp_text), run_time=0.5)
         
         self.wait(0.1)
@@ -2249,11 +2251,16 @@ class ALittleMoreSOS(Slide):
         sos_unit2_eq = MathTex(r"{{\Tr(\Tilde{\rho} } I)}} {{= 1}}",
                                             font_size=28).next_to(sos_positivity2_eq,DOWN,buff=0.25)
         
+        ast_text = MathTex(r"\ast",font_size=24,color=TEAL_D).next_to(sos_positivity2_eq,
+                                                                      UP,aligned_edge=RIGHT,buff=0).shift(LEFT*0.5+DOWN*0.05)
+        footnote_text = Tex(r"\(^\ast\)Here, \(B^\dagger \coloneq \overline{B}^\sfT\) is the conjugate transpose.",
+                            font_size=24,color=TEAL_D).to_corner(DR, buff=0.5)
+        
         moment_mat2_text = Tex(r"Moment Matrix",font_size=28).next_to(surrbox5,DOWN,buff=1.5).shift(RIGHT*8)
 
         moment_mat2_positivity_eq = MathTex(r"M \in M_{n^{\calO(t)}}(\C),\ M\succcurlyeq 0",
                                             font_size=28).next_to(moment_mat2_text,DOWN,buff=0.25)
-        moment_mat2_unit_eq = MathTex(r"M_{II} = 1, \cdots",
+        moment_mat2_unit_eq = MathTex(r"M_{II} = 1,\ M^\dagger = M,\ \cdots",
                                             font_size=28).next_to(moment_mat2_positivity_eq,DOWN,buff=0.25)
 
         # lrarrow = MathTex(r"\Leftrightarrow").shift(UP*1.25)
@@ -2275,6 +2282,7 @@ class ALittleMoreSOS(Slide):
             Create(lrarrow2, run_time=0.5),
             lag_ratio=0.5
         ))
+        self.play(Write(ast_text),Write(footnote_text,run_time=1))
 
         self.wait(0.1)
 
@@ -2398,7 +2406,7 @@ class TheFinalSOSSlide(Slide):
 
     def construct(self):
         title = FancyTitle("Pseudo-Distributions and SDPs")
-        slide_text_1 = r"We relax the notion of a distribution to only be consistant on low-degree marginals and their interaction."
+        slide_text_1 = r"We relax the notion of a distribution to only be consistent on low-degree marginals/moments and their interaction."
         slide_text_1_mo = Tex(f"{{16cm}}{slide_text_1}", font_size=28, tex_environment="minipage").to_corner(UL, buff=0.5).shift(DOWN)
 
         pdensmat_text = Tex(r"Degree-\(2t\) Pseudo-Density Matrix",font_size=28).shift(DOWN*1.95+LEFT*4)
@@ -2412,7 +2420,7 @@ class TheFinalSOSSlide(Slide):
 
         moment_mat2_positivity_eq = MathTex(r"M \in M_{n^{\calO(t)}}(\C),\ M\succcurlyeq 0",
                                             font_size=28).next_to(moment_mat2_text,DOWN,buff=0.25)
-        moment_mat2_unit_eq = MathTex(r"M_{II} = 1,\ M^\dagger = M, \cdots",
+        moment_mat2_unit_eq = MathTex(r"M_{II} = 1,\ M^\dagger = M,\ \cdots",
                                             font_size=28).next_to(moment_mat2_positivity_eq,DOWN,buff=0.25)
 
         # lrarrow = MathTex(r"\Leftrightarrow").shift(UP*1.25)
@@ -2441,7 +2449,7 @@ class TheFinalSOSSlide(Slide):
 
         slide_text_2 = r"Recall the star bound:"
         slide_text_2_mo = Tex(f"{{16cm}}{slide_text_2}",
-                              font_size=28, tex_environment="minipage").next_to(slide_text_1_mo, DOWN, aligned_edge=LEFT, buff=3.5)
+                              font_size=28, tex_environment="minipage").next_to(slide_text_1_mo, DOWN, aligned_edge=LEFT, buff=3)
         
         slide_text_3_mo = Tex(r"{{\textbf{Lemma:} For all}} {{density matrices,}} {{\(\rho\),}} {{we have that \(\Tr(\rho H_\bigstar) \leq \frac{n+d-2}{d} = \frac{n-1}{d} + \frac{d-1}{d}\).}}", 
                            font_size=28)
@@ -2483,7 +2491,7 @@ class TheFinalSOSSlide(Slide):
         self.wait(0.1)
         self.next_slide()
 
-        slide_text_4 = fr"{{16cm}}\textbf{{Theorem:}} There is a algorithm for \algprobm{{Maximal Entanglement}} over qubits with an approximation ratio\\\phantom{{\textbf{{Theorem:}} }} of \(0.595\) (our algorithm adapts the algorithms of [PT21,LP24]).\\\phantom{{\textbf{{Theorem:}} }}\color[HTML]{{{GRAY_C.to_hex()[1:]}}}{{Previous best had an approximation ratio of \(0.5\) [PT22].}}"
+        slide_text_4 = fr"{{16cm}}\textbf{{Theorem:}} There is a algorithm for \algprobm{{Maximal Entanglement}} over qubits with an approximation ratio\\\phantom{{\textbf{{Theorem:}} }} of \(0.595\) (our algorithm adapts the algorithms of [PT21; LP24]).\\\phantom{{\textbf{{Theorem:}} }}\color[HTML]{{{GRAY_C.to_hex()[1:]}}}{{Previous best had an approximation ratio of \(0.5\) [PT22].}}"
         slide_text_4_mo = Tex(slide_text_4, font_size=28, tex_environment="minipage").next_to(slide_text_3_mo,DOWN,aligned_edge=LEFT,buff=1.75) 
 
         self.play(Write(slide_text_4_mo), run_time=0.5)
@@ -2506,7 +2514,7 @@ class QMdCIntro(Slide):
 
         slide_text_1 = Tex(r"{8cm}Quantum Max-\(d\)-Cut is a 2-local Hamiltonian problem defined over a graph, \(G = (V,E,w)\).", 
                            font_size=28, tex_environment="minipage")
-        slide_text_2 = MathTex(r"H = \sum_{(u,v) \in E} w_{(u,v)} \overbrace{\sum_{1\leq a<b\leq d}\frac{1}{2}\left(\ket{ab}-\ket{ba}\right)\left(\bra{ab}-\bra{ba}\right)^{uv} }^{H_{(u,v)}", font_size=28)
+        slide_text_2 = MathTex(r"H = \sum_{(u,v) \in E} w_{(u,v)} \overbrace{\sum_{1\leq a<b\leq d}\frac{1}{2}\left(\ket{ab}-\ket{ba}\right)\left(\bra{ab}-\bra{ba}\right)^{uv} }^{h_{(u,v)}", font_size=28)
         slide_text_2b = Tex(r"\begin{center}No longer rank one!\\Not an instance of Maximal Entanglement.\end{center}", color=GOLD, font_size=28)
         slide_text_1.to_corner(UL, buff=0.5).shift(DOWN)
         slide_text_2.next_to(slide_text_1, DOWN, buff=0.5)
@@ -2558,7 +2566,7 @@ class QMdCIntro(Slide):
 
         slide_text_5 = Tex(r"{8cm}In Quantum Max-\(d\)-Cut, the local terms are projectors onto the \emph{antisymmetric subspace} subspace: \(\Span\{\ket{ab}-\ket{ba}\}_{a<b}\)", 
                            font_size=28, tex_environment="minipage")
-        slide_text_6 = MathTex(r"\begin{split}H_{(a,b)} &= \frac{1}{2}\left(\ket{12}-\ket{21}\right)\left(\bra{12}-\bra{21}\right)\\&+ \cdots \\&+ \frac{1}{2}\left(\ket{ab}-\ket{ba}\right)\left(\bra{ab}-\bra{ba}\right)\\&+ \cdots\end{split}", 
+        slide_text_6 = MathTex(r"\begin{split}h_{(u,v)} &= \frac{1}{2}\left(\ket{12}-\ket{21}\right)\left(\bra{12}-\bra{21}\right)\\&+ \cdots \\&+ \frac{1}{2}\left(\ket{ab}-\ket{ba}\right)\left(\bra{ab}-\bra{ba}\right)\\&+ \cdots\end{split}", 
                            font_size=28)
         slide_text_5.next_to(slide_text_1, DOWN, aligned_edge=LEFT, buff=3).shift(RIGHT*8)
         slide_text_6.next_to(slide_text_5, DOWN, buff=0.25)
@@ -2588,11 +2596,12 @@ class QMdCStarBound(Slide):
 
         slide_text_1 = r"\algprobm{Quantum Max-\(d\)-Cut} is \emph{not} an instance of the \algprobm{Maximal Entanglement} problem."
         slide_text_2 = r"\(\rightarrow\) We shouldn't expect the star bound to be the same."
-        slide_text_3 = [r"\textbf{Lemma ([Jor24,KŠV25]):} We have that \(\eig_{\max}\left(H_{\bigstar}^{\mathsc{qm\(d\)c}}\right) = \frac{n + d - 1}{2} = \frac{n-1}{2} +\)", r"\(\frac{d-1}{2}\)", "."]
+        slide_text_3 = [r"\textbf{Lemma ([Jor24; KŠV25]):} We have that \(\eig_{\max}\left(H_{\bigstar}^{\mathsc{qm\(d\)c}}\right) = \frac{n + d - 1}{2} = \frac{n-1}{2} +\)", r"\(\frac{d-1}{2}\)", "."]
         slide_text_4 = fr"\emph{{Proof (Sketch):}} Eigenvalue calculation using the representation theory of the symmetric group (not SOS)."
         slide_text_5 = r"\textbf{Theorem:} For all density matrices, \(\rho\), we have that \(\Tr(\rho H) \leq \frac{W}{2} + \frac{1}{2} \LP_{\mathsc{\((d-1)\)-Match}}(G)\)."
         slide_text_6 = [r"\emph{Proof (Sketch):} The ", rf"{{\color[HTML]{{ {TEAL_D.to_hex()[1:]} }}{{``surplus''}} }}", r"values give a fractional \(b\)-matching, by the above star bound."]
-        slide_text_7 = [r"\textbf{Theorem:} There is an algorithm for \algprobm{Quantum Max-\(3\)-Cut} with approximation ratio 0.555.\\", fr"\phantom{{\textbf{{Theorem:}} }}\color[HTML]{{{GRAY_C.to_hex()[1:]}}}{{Previous best had an approximation ratio of \(0.4\) [FJ97;CJKKW23].}}"]
+        slide_text_7 = [r"\textbf{Theorem:} There is an algorithm for \algprobm{Quantum Max-\(3\)-Cut} with approximation ratio 0.555.\\", fr"\phantom{{\textbf{{Theorem:}} }}\color[HTML]{{{GRAY_C.to_hex()[1:]}}}{{Previous best had an approximation ratio of \(0.4\) [FJ97; CJKKW23].}}"]
+        slide_text_7b = [r"\textbf{Conjecture:} There is an algorithm for \algprobm{Quantum Max-\(3\)-Cut} with approximation ratio 0.611.\\", fr"\phantom{{\textbf{{Conjecture:}} }}\color[HTML]{{{GRAY_C.to_hex()[1:]}}}{{Previous best had an approximation ratio of \(0.4\) [FJ97; CJKKW23].}}"]
 
         slide_text_1_mo = Tex(fr"{{16cm}}{slide_text_1}", 
                            font_size=28, tex_environment="minipage").to_corner(UL, buff=0.5).shift(DOWN)
@@ -2611,7 +2620,9 @@ class QMdCStarBound(Slide):
                               font_size=28).next_to(slide_text_5_mo, DOWN, aligned_edge=LEFT, buff=0.25)
         black_box2 = Rectangle(width=0.15,height=0.15,fill_opacity=1).next_to(slide_text_6_mo, RIGHT)
 
-        lide_text_7_mo = Tex(*slide_text_7, 
+        slide_text_7_mo = Tex(*slide_text_7, 
+                              font_size=28, tex_environment="flushleft").next_to(slide_text_6_mo, DOWN, aligned_edge=LEFT, buff=0.5)
+        slide_text_7b_mo = Tex(*slide_text_7b, 
                               font_size=28, tex_environment="flushleft").next_to(slide_text_6_mo, DOWN, aligned_edge=LEFT, buff=0.5)
 
         self.play(Write(slide_text_1_mo), run_time=0.5)
@@ -2647,8 +2658,111 @@ class QMdCStarBound(Slide):
         self.wait(0.1)
         self.next_slide()
 
-        self.play(Write(lide_text_7_mo), run_time = 0.5)
+        self.play(Write(slide_text_7_mo), run_time = 0.5)
         
+        self.wait(0.1)
+        self.next_slide()
+
+        nxG = nx.Graph()
+        nxG.add_edges_from([(1,2),(2,3),(3,4),(4,5),(1,5),(6,7),(7,8),(8,9),(9,10),(6,10),(1,6),(2,7),(3,8),(4,9),(5,10)])
+        sl = nx.spring_layout(nxG, seed=2, scale=2.5)
+        sl2 = {k: [x*3, y*0.75, 0] for k, (x, y) in sl.items()}
+        G = Graph.from_networkx(nxG, layout=sl2,vertex_config={
+                "radius": 0.15,
+            }).scale(0.5).shift(DOWN*3.25+LEFT*3)
+
+        cycles = [(1,2),(2,3),(3,4),(4,5),(1,5),(6,7),(7,8),(8,9),(9,10),(6,10)]
+        cycles_top = [(1,2),(2,3),(3,4),(4,5),(1,5)]
+        cycles_bot = [(6,7),(7,8),(8,9),(9,10),(6,10)]
+        cycle_edges_vg = VGroup(*[emob for e, emob in G.edges.items() if e in cycles])
+
+        edge_to_ment = [(1,2),(3,4),(7,8),(9,10)]
+        all_other_cycle_edges=[(2,3),(4,5),(1,5),(6,7),(8,9),(6,10)]
+
+        edgeboxes = [RoundedRectangle(
+            width=G.edges[e].get_length() + 0.5,
+            height=0.5,
+            corner_radius=0.2,
+            stroke_color=GOLD,
+            fill_color=GOLD,
+            fill_opacity=0.5,
+        ).move_to(G.edges[e].get_center()).rotate(G.edges[e].get_angle())
+        for e in G.edges.keys() if e in edge_to_ment]
+
+        edgeboxes2 = [RoundedRectangle(
+            width=G.edges[e].get_length() + 0.5,
+            height=0.5,
+            corner_radius=0.2,
+            stroke_color=GOLD,
+            fill_color=GOLD,
+            fill_opacity=0.5,
+        ).move_to(G.edges[e].get_center()).rotate(G.edges[e].get_angle())
+        for e in G.edges.keys() if e in all_other_cycle_edges]
+        
+        self.play(Create(G,run_time=0.5))
+
+        self.wait(0.1)
+        self.next_slide()
+
+        bmatch_text = Tex(r"Find \(2\)-Matching", font_size=28, color=GREEN_D).next_to(G,RIGHT,buff=1).shift(UP*0.25)
+        output_text = Tex("Output:", font_size=28).next_to(G,RIGHT,buff=1).shift(DOWN*0.25)
+        state1 = MathTex(r"{{\rho = }}{{\rho_{e_1} }} \otimes {{\rho_{e_2} }} \otimes {{\rho_{e_3} }} \otimes {{\rho_{e_4} }} \otimes \frac{1}{9}I", font_size=28, color=GOLD).next_to(output_text,RIGHT,buff=0.25)
+        state2 = MathTex(r"{{\rho = }}{{\rho_{C_1}}} \otimes {{\rho_{C_2} }}", font_size=28, color=GOLD).next_to(output_text,RIGHT,buff=0.25)
+
+        self.play(Write(bmatch_text),LaggedStart(*[e.animate.set_color(GREEN_D) for e in cycle_edges_vg], lag_ratio=0.5, run_time=0.75))
+
+        self.wait(0.1)
+        self.next_slide()
+
+        self.bring_to_front(*(G.edges.values()), *(G.vertices.values()))
+        self.play(Write(output_text), LaggedStart(*[DrawBorderThenFill(eb,run_time=0.5) for eb in edgeboxes], lag_ratio=0.25))
+
+        edgeboxes_copy = [eb.copy() for eb in edgeboxes]
+        self.add(*edgeboxes_copy)
+        self.play(LaggedStart(*[AnimationGroup(Write(state1[i*2]),Transform(edgeboxes_copy[i], state1[i*2+1])) for i in range(4)],
+                              Write(state1[8]),
+                              lag_ratio=0.5))
+
+        # TODO make state line in the first slide
+
+        self.wait(0.1)
+        self.next_slide()
+
+        self.remove(state1,*state1[:],*edgeboxes_copy)
+        self.add(state1)
+
+        edgeboxes_top = [RoundedRectangle(
+            width=G.edges[e].get_length() + 0.5,
+            height=0.5,
+            corner_radius=0.2,
+            stroke_color=GOLD,
+            fill_color=GOLD,
+            fill_opacity=0.5,
+        ).move_to(G.edges[e].get_center()).rotate(G.edges[e].get_angle())
+        for e in G.edges.keys() if e in cycles_top]
+        edgeboxes_bot = [RoundedRectangle(
+            width=G.edges[e].get_length() + 0.5,
+            height=0.5,
+            corner_radius=0.2,
+            stroke_color=GOLD,
+            fill_color=GOLD,
+            fill_opacity=0.5,
+        ).move_to(G.edges[e].get_center()).rotate(G.edges[e].get_angle())
+        for e in G.edges.keys() if e in cycles_bot]
+
+        self.play(FadeOut(state1[1:]))
+        self.bring_to_front(*(G.edges.values()), *(G.vertices.values()))
+        self.play(LaggedStart(*[DrawBorderThenFill(eb,run_time=0.5) for eb in edgeboxes2], lag_ratio=0.25))
+
+        self.play(LaggedStart(Transform(VGroup(*edgeboxes_top), state2[1],path_arc=1),
+                              AnimationGroup(Write(state2[2]),Transform(VGroup(*edgeboxes_bot), state2[3],path_arc=-1)),
+                              lag_ratio=0.5))
+
+        self.play(TransformMatchingShapes(slide_text_7_mo[0],slide_text_7b_mo[0]),Transform(slide_text_7_mo[1],slide_text_7b_mo[1]))
+        
+
+        # TODO make state line in the first slide
+
         self.wait(0.1)
 
 
@@ -2662,71 +2776,22 @@ class QMdCPartialResults(Slide):
         title = FancyTitle(r"\algprobm{Quantum Max-\(3\)-Cut}: Partial SOS Results")
         self.play(title.anim())
 
-        self.wait(0.1)
-        self.next_slide()
-
-        slide_text_1 = r"To get better algorithms we need a sum-of-squares (SOS) proof of the star bound so we can use an SDP."
-        slide_text_2 = r"\(\rightarrow\) An SOS proof has remained suprizingly elusive."
+        slide_text_1 = r" To get better algorithms we need a sum-of-squares (SOS) proof of the star bound so we can use an SDP."
+        slide_text_2 = r".-> An SOS proof has remained surprisingly elusive."
         slide_text_3 = r"\textbf{Theorem:} There is a low-degree SOS proof that certifies the star bound for at most 4 neighbors."
 
-        slide_text_4 = r"\textbf{Theorem:} With certian gloabal constraints (SOS axioms) there is an SOS proof the certifies the star bound on the star graph for all sizes."
-        slide_text_5 = r"\(\rightarrow\) The global constraints restrict the search space to irreps/isotypical subspaces."
-        slide_text_6 = r"\(\rightarrow\) Can't be use for algorithms on general graphs."
+        slide_text_4 = r"\textbf{Theorem:} With certain global constraints (SOS axioms) there is an SOS proof the certifies the star bound on the star graph for all sizes."
+        slide_text_5 = r".-> The global constraints restrict the search space to irreps/isotypical subspaces."
+        slide_text_6 = r".-> Can't be use for algorithms on general graphs."
 
         slide_text_7 = r"\textbf{Question:} Is there a low-degree SOS proof of the star bound for any number of neighbors?"
 
-        slide_text_1_mo = Tex(fr"{{16cm}}{slide_text_1}", 
-                           font_size=28, tex_environment="minipage").to_corner(UL, buff=0.5).shift(DOWN)
-        slide_text_2_mo = Tex(fr"{{15.75cm}}{slide_text_2}", 
-                           font_size=28, tex_environment="minipage").next_to(slide_text_1_mo, DOWN, aligned_edge=LEFT, buff=0.25).shift(RIGHT*0.25)
-        
-        slide_text_3_mo = Tex(fr"{{16cm}}{slide_text_3}", 
-                           font_size=28, tex_environment="minipage").next_to(slide_text_2_mo, DOWN, aligned_edge=LEFT, buff=0.5).shift(LEFT*0.25)
-        
-        slide_text_4_mo = Tex(fr"{{16cm}}{slide_text_4}", 
-                           font_size=28, tex_environment="minipage").next_to(slide_text_3_mo, DOWN, aligned_edge=LEFT, buff=0.5)
+        bullets = Bullets(slide_text_1,slide_text_2,slide_text_3,slide_text_4,slide_text_5,slide_text_6,slide_text_7,double_space_for_new_sections=True,bullet_aligned_edge=None)
+        for _ in range(bullets.get_num_lines()):
+            self.wait(0.1)
+            self.next_slide()
+            self.play(bullets.write_next_line(run_time=0.5))
 
-        slide_text_5_mo = Tex(f"{{16cm}}{slide_text_5}", 
-                              font_size=28, tex_environment="minipage").next_to(slide_text_4_mo, DOWN, aligned_edge=LEFT, buff=0.25).shift(RIGHT*0.25)
-
-        slide_text_6_mo = Tex(fr"{{16cm}}{slide_text_6}", 
-                              font_size=28, tex_environment="minipage").next_to(slide_text_5_mo, DOWN, aligned_edge=LEFT, buff=0.25)
-
-        lide_text_7_mo = Tex(fr"{{16cm}}{slide_text_7}", 
-                              font_size=28, tex_environment="minipage").next_to(slide_text_6_mo, DOWN, aligned_edge=LEFT, buff=0.5).shift(LEFT*0.25)
-
-        self.play(Write(slide_text_1_mo), run_time=0.5)
-
-        self.wait(0.1)
-        self.next_slide()
-
-        self.play(Write(slide_text_2_mo), run_time=0.5)
-
-        self.wait(0.1)
-        self.next_slide()
-
-        self.play(Write(slide_text_3_mo), run_time=0.5)
-
-        self.wait(0.1)
-        self.next_slide()
-
-        self.play(Write(slide_text_4_mo), run_time=0.5)
-
-        self.wait(0.1)
-        self.next_slide()
-
-        self.play(Write(slide_text_5_mo), run_time=0.5)
-
-        self.wait(0.1)
-        self.next_slide()
-
-        self.play(Write(slide_text_6_mo), run_time=0.5)
-        
-        self.wait(0.1)
-        self.next_slide()
-
-        self.play(Write(lide_text_7_mo), run_time = 0.5)
-        
         self.wait(0.1)
 
 
@@ -2740,41 +2805,16 @@ class FutureWork(Slide):
         title = FancyTitle("Future Work")
         self.play(title.anim())
 
-        self.wait(0.1)
-        self.next_slide()
+        slide_text_1 = r" We summarize some future directions inspired by the present work."
+        slide_text_2 = r".1 Are there low-degree SOS proofs of the \algprobm{Quantum Max-\(d\)-Cut} star bound for any number of neighbors? Or are there low-degree refutations?"
+        slide_text_3 = r".2 Can we find an improved approximation algorithm for the \algprobm{Maximal Entanglement} problem."
+        slide_text_4 = r".3 We can generalize \algprobm{Quantum Max-\(d\)-Cut} to a class of Hamiltonians known as swap operators algebra Hamiltonians. Can the tools developed for QMC and QM\(d\)C in this regime."
 
-        slide_text_1 = r"We summarize some future directions inspired by the present work."
-        slide_text_2 = r"1. Are there low-degree SOS proofs of the \algprobm{Quantum Max-\(d\)-Cut} star bound for any number of\\\phantom{1.}neighbors? Or are there low-degree refutations."
-        slide_text_3 = r"2. Can we find an improved approximation algorithm for the \algprobm{Maximal Entanglment} problem."
-        slide_text_4 = r"3. We can generalize \algprobm{Quantum Max-\(d\)-Cut} to a class of Hamiltonians known as swap opeartors\\\phantom{3.} algebra Hamiltonians. Can the tools develuped for QMC and QM\(d\)C in this regiem."
-
-        slide_text_1_mo = Tex(fr"{{16cm}}{slide_text_1}", 
-                           font_size=28, tex_environment="minipage").to_corner(UL, buff=0.5).shift(DOWN)
-        slide_text_2_mo = Tex(fr"{{15.75cm}}{slide_text_2}", 
-                           font_size=28, tex_environment="minipage").next_to(slide_text_1_mo, DOWN, aligned_edge=LEFT, buff=0.25).shift(RIGHT*0.25)
-        
-        slide_text_3_mo = Tex(fr"{{15.75cm}}{slide_text_3}", 
-                           font_size=28, tex_environment="minipage").next_to(slide_text_2_mo, DOWN, aligned_edge=LEFT, buff=0.25)
-        
-        slide_text_4_mo = Tex(fr"{{15.75cm}}{slide_text_4}", 
-                           font_size=28, tex_environment="minipage").next_to(slide_text_3_mo, DOWN, aligned_edge=LEFT, buff=0.25)
-
-        self.play(Write(slide_text_1_mo), run_time=0.5)
-
-        self.wait(0.1)
-        self.next_slide()
-
-        self.play(Write(slide_text_2_mo), run_time=0.5)
-
-        self.wait(0.1)
-        self.next_slide()
-
-        self.play(Write(slide_text_3_mo), run_time=0.5)
-
-        self.wait(0.1)
-        self.next_slide()
-
-        self.play(Write(slide_text_4_mo), run_time=0.5)
+        bullets = Bullets(slide_text_1,slide_text_2,slide_text_3,slide_text_4)
+        for _ in range(bullets.get_num_lines()):
+            self.wait(0.1)
+            self.next_slide()
+            self.play(bullets.write_next_line(run_time=0.5))
 
         self.wait(0.1)
 
@@ -2786,7 +2826,7 @@ class Thanks(Slide):
 
 
     def construct(self):
-        t_text = Text("Thanks!", font_size=48)
+        t_text = Text("Thank You!", font_size=48)
         line = Line(LEFT*3,RIGHT*3)
         q_text = Text("Questions?", font_size=28, slant=ITALIC)
 

@@ -3,3 +3,10 @@ __pycache__/
 media/
 slides/
 .venv/
+.vscode/
+
+todo.txt
+*.html
+!template.html
+
+*_assets/
