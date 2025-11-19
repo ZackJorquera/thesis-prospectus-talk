@@ -248,7 +248,7 @@ class Bullets(VGroup):
                     bullet_and_line.shift(DOWN*self._vspace)
 
             self._lines.append(bullet_and_line)
-            self._indent_level_list(indent_level)
+            self._indent_level_list.append(indent_level)
             self.add(bullet_and_line)
 
         elif isinstance(line, Mobject):
