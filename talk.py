@@ -705,7 +705,7 @@ class IntroToLHPs(Slide):
 
         slide_text_1 = r" Find a string, \(x \in [d]^n\), that maximizes some \(k\)-local objective: $\calC(x) = \sum_\alpha \mathcal{C}_\alpha(x)$."
         slide_text_2 = r".-> Each \(\calC_\alpha: [d]^n \to \R\) encodes some observable property of the string, \(x \in [d]^n\)."
-        slide_text_3 = r" We can represent \(\calC_\alpha: [d]^n \to \R\) as a diagonal matrix, \(\calC_\alpha \in M_{d^n}(\C)\) (moreover, \(\calC = \sum_\alpha \calC_\alpha\))."
+        slide_text_3 = r" We can represent \(\calC_\alpha: [d]^n \to \R\) as a diagonal matrix, \(\calC_\alpha \in M_{d^n}(\R)\) (moreover, \(\calC = \sum_\alpha \calC_\alpha\))."
         slide_text_4 = r".-> We then have that \(\calC(x) = \bra{x}\calC\ket{x}\) and \(\max_x(\calC(x)) = \eig_{\max}(\calC)\)."
         slide_text_5 = fr".-> {{\color[HTML]{{{GREEN_E.to_hex()[1:]}}}Goal}}: Find a string, \(x \in [d]^n\), that optimizes: \(\bra{{x}}\calC \ket{{x}}\)."
         
@@ -875,7 +875,7 @@ class QuantumMaxCut(Slide):
 
         slide_text_3 = Tex(r"{8cm}Recall, in Max-Cut, the local terms (as matrices), were projectors onto the ``different'' subspace: \(\Span\{\ket{01},\ket{10}\}\)", 
                            font_size=28, tex_environment="minipage")
-        slide_text_4 = MathTex(r"\calC_{(a,b)} = \ket{01}\bra{10} + \ket{10}\bra{10}", 
+        slide_text_4 = MathTex(r"\calC_{(a,b)} = \ket{01}\bra{01} + \ket{10}\bra{10}", 
                            font_size=28)
         slide_text_3.next_to(slide_text_1, DOWN, aligned_edge=LEFT, buff=3)
         slide_text_4.next_to(slide_text_3, DOWN, buff=0.5)
@@ -1872,7 +1872,7 @@ class ALittleSOS(Slide):
 
         positivity_eq = MathTex(r"{{\forall \calP : \E_{x \sim \mu}[\calP(x)^2]}} = \sum_{x \in \{-1,+1\}} \mu(x) \calP(x)^2 {{\geq 0}}",
                                             font_size=28).shift(UP*1+LEFT*4)
-        unit_eq = MathTex(r"{{\E_{x \sim \mu}[1]}} = \sum_{x \in \{-1,+1\}} \mu(1) {{= 1}}",
+        unit_eq = MathTex(r"{{\E_{x \sim \mu}[1]}} = \sum_{x \in \{-1,+1\}} \mu(x) {{= 1}}",
                                             font_size=28).next_to(positivity_eq,DOWN,buff=0.25)
         positivity_eq2 = MathTex(r"{{\forall \calP : \E_{x \sim \mu}[\calP(x)^2]}} {{\geq 0}}",
                                             font_size=28).shift(UP*1+LEFT*4)
@@ -2009,7 +2009,7 @@ class ALittleSOS(Slide):
         self.wait(0.1)
         self.next_slide()
 
-        pdist_text = Tex(r"Degree-\(2t\) Pseudo-Distribution",font_size=28).next_to(wid_vg,DOWN,buff=1)
+        pdist_text = Tex(r"Degree-\(2t\) Pseudo-Distribution, \(\Tilde{\mu}\)",font_size=28).next_to(wid_vg,DOWN,buff=1)
 
         sos_positivity_eq = MathTex(r"{{\forall \calP \text{ of degree } \leq t : \E_{x \sim \Tilde{\mu} }[\calP(x)^2]}} {{\geq 0}}",
                                             font_size=28).next_to(pdist_text,DOWN,buff=0.25)
@@ -2076,7 +2076,7 @@ class ALittleMoreSOS(Slide):
 
         self.add(moment_mat_group)
 
-        pdist_text = Tex(r"Degree-\(2t\) Pseudo-Distribution",font_size=28).shift(LEFT*4 + DOWN*1.4)
+        pdist_text = Tex(r"Degree-\(2t\) Pseudo-Distribution, \(\Tilde{\mu}\)",font_size=28).shift(LEFT*4 + DOWN*1.4)
 
         sos_positivity_eq = MathTex(r"{{\forall \calP \text{ of degree } \leq t : \E_{x \sim \Tilde{\mu} }[\calP(x)^2]}} {{\geq 0}}",
                                             font_size=28).next_to(pdist_text,DOWN,buff=0.25)
@@ -2120,7 +2120,7 @@ class ALittleMoreSOS(Slide):
         self.wait(0.1)
         self.next_slide()
 
-        pdensmat_text = Tex(r"Degree-\(2t\) Pseudo-Density Matrix",font_size=28).next_to(surrbox5,DOWN,buff=1.5)
+        pdensmat_text = Tex(r"Degree-\(2t\) Pseudo-Density Matrix, \(\Tilde{\rho}\)",font_size=28).next_to(surrbox5,DOWN,buff=1.5)
 
         sos_positivity2_eq = MathTex(r"{{\forall B \in M_{d^n}(\C) \text{ with degree } \leq t : \Tr(\Tilde{\rho}B^\dagger B)}} {{\geq 0}}",
                                             font_size=28).next_to(pdensmat_text,DOWN,buff=0.25)
@@ -2227,7 +2227,7 @@ class ALittleSOSVideo(Scene):
                               Write(moment_mat_b_col_labels,run_time=0.25),
                               Write(moment_mat_b_row_labels,run_time=0.25),lag_ratio=0.25))
 
-        pdist_text = Tex(r"Degree-\(2t\) Pseudo-Distribution",font_size=28).next_to(wid_vg,DOWN,buff=1)
+        pdist_text = Tex(r"Degree-\(2t\) Pseudo-Distribution, \(\tilde{\mu}\)",font_size=28).next_to(wid_vg,DOWN,buff=1)
 
         sos_positivity_eq = MathTex(r"{{\forall \calP \text{ of degree } \leq t : \E_{x \sim \Tilde{\mu} }[\calP(x)^2]}} {{\geq 0}}",
                                             font_size=28).next_to(pdist_text,DOWN,buff=0.25)
@@ -2285,7 +2285,7 @@ class TheFinalSOSSlide(Slide):
         slide_text_1 = r"We relax the notion of a distribution to only be consistent on low-degree marginals/moments and their interaction."
         slide_text_1_mo = Tex(f"{{16cm}}{slide_text_1}", font_size=28, tex_environment="minipage").to_corner(UL, buff=0.5).shift(DOWN)
 
-        pdensmat_text = Tex(r"Degree-\(2t\) Pseudo-Density Matrix",font_size=28).shift(DOWN*1.95+LEFT*4)
+        pdensmat_text = Tex(r"Degree-\(2t\) Pseudo-Density Matrix, \(\Tilde{\rho}\)",font_size=28).shift(DOWN*1.95+LEFT*4)
 
         sos_positivity2_eq = MathTex(r"{{\forall B \in M_{d^n}(\C) \text{ with degree } \leq t : \Tr(\Tilde{\rho}B^\dagger B)}} {{\geq 0}}",
                                             font_size=28).next_to(pdensmat_text,DOWN,buff=0.25)
@@ -2417,7 +2417,7 @@ class QMdCIntro(Slide):
 
         slide_text_3 = Tex(r"{8cm}Recall, in Max-Cut, the local terms, were projectors onto the ``different'' subspace: \(\Span\{\ket{01},\ket{10}\}\)", 
                            font_size=28, tex_environment="minipage")
-        slide_text_4 = MathTex(r"\calC_{(a,b)} = \ket{01}\bra{10} + \ket{10}\bra{10}", 
+        slide_text_4 = MathTex(r"\calC_{(a,b)} = \ket{01}\bra{01} + \ket{10}\bra{10}", 
                            font_size=28)
         slide_text_3.next_to(slide_text_1, DOWN, aligned_edge=LEFT, buff=3)
         slide_text_4.next_to(slide_text_3, DOWN, buff=0.5)
