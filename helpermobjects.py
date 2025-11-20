@@ -229,9 +229,6 @@ class Bullets(VGroup):
                             bullet_and_line = VGroup(bullet_mo,line_text_mo).arrange(RIGHT,buff=self._bullet_hspace)
                     else:
                         bullet_and_line = VGroup(bullet_mo,line_text_mo).arrange(RIGHT,buff=self._bullet_hspace,aligned_edge=UP)
-                    # TODO: when the bullet is * or -> then arrange aligned_edge=UP gives the wrong spacing.
-                    # Really is is wrong all the time, but idk how to tap into latex to get the right spacing
-                    # the basic_bullet fix is sort of hacky but it works for most cases
                 else:
                     bullet_and_line = line_text_mo
             else:
@@ -239,13 +236,24 @@ class Bullets(VGroup):
                 
             if len(self._lines) == 0:
                 if self._align_ref is not None:
-                    raise "I didn't write the code for this part"
+                    if isinstance(self._align_ref, np.ndarray):
+                        bullet_and_line.to_corner(UL, buff=0).shift(self._align_ref).shift(RIGHT * indent_level * self._indent_size)
+                    else:
+                        raise "I didn't write the code for this part"
                 else:
                     bullet_and_line.to_corner(UL, buff=0.5).shift(DOWN).shift(RIGHT * indent_level * self._indent_size)
             else:
                 bullet_and_line.next_to(self._lines[-1], DOWN, aligned_edge=LEFT, buff=self._vspace).shift(RIGHT * (indent_level - self._indent_level_list[-1]) * self._indent_size)
                 if self._ds_for_new_sec and indent_level == 0:
                     bullet_and_line.shift(DOWN*self._vspace)
+            
+            if self._bullet_ae is not None and np.allclose(self._bullet_ae, UP) and bullet_mo is not None:
+                # idk, I did some data collection and found this to be the best number
+                # my guess is Manim rescales to get the font size and so there is something I'm doing back end that is causing problems.
+                # this number should be easy to find, I'm just too lazy to figure it out.
+                font_size_in_cm = self._font_size * 0.009708412760416668
+                bullet_shift = (font_size_in_cm-bullet_mo.height)/2
+                bullet_mo.shift(DOWN*bullet_shift)
 
             self._lines.append(bullet_and_line)
             self._indent_level_list.append(indent_level)
@@ -271,3 +279,6 @@ class Bullets(VGroup):
     
     def get_lines(self):
         return self._lines
+    
+    def __getitem__(self, indices):
+        return self._lines[indices]

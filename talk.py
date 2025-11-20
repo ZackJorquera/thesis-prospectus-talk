@@ -703,45 +703,28 @@ class IntroToLHPs(Slide):
     def construct(self):
         title = FancyTitle("Classical Optimization Problems (Again)")
 
-        slide_text_1 = r"Find a string, \(x \in [d]^n\), that maximizes some \(k\)-local objective: $\calC(x) = \sum_\alpha \mathcal{C}_\alpha(x)$."
-        slide_text_2 = r"\(\rightarrow\) Each \(\calC_\alpha: [d]^n \to \R\) encodes some observable property of the string, \(x \in [d]^n\)."
-        slide_text_3 = r"We can represent \(\calC_\alpha: [d]^n \to \R\) as a diagonal matrix, \(\calC_\alpha \in M_{d^n}(\C)\) (moreover, \(\calC = \sum_\alpha \calC_\alpha\))."
-        slide_text_4 = r"\(\rightarrow\) We then have that \(\calC(x) = \bra{x}\calC\ket{x}\) and \(\max_x(\calC(x)) = \eig_{\max}(\calC)\)."
-        slide_text_5 = fr"\(\rightarrow\) {{\color[HTML]{{{GREEN_E.to_hex()[1:]}}}Goal}}: Find a string, \(x \in [d]^n\), that optimizes: \(\bra{{x}}\calC \ket{{x}}\)."
+        slide_text_1 = r" Find a string, \(x \in [d]^n\), that maximizes some \(k\)-local objective: $\calC(x) = \sum_\alpha \mathcal{C}_\alpha(x)$."
+        slide_text_2 = r".-> Each \(\calC_\alpha: [d]^n \to \R\) encodes some observable property of the string, \(x \in [d]^n\)."
+        slide_text_3 = r" We can represent \(\calC_\alpha: [d]^n \to \R\) as a diagonal matrix, \(\calC_\alpha \in M_{d^n}(\C)\) (moreover, \(\calC = \sum_\alpha \calC_\alpha\))."
+        slide_text_4 = r".-> We then have that \(\calC(x) = \bra{x}\calC\ket{x}\) and \(\max_x(\calC(x)) = \eig_{\max}(\calC)\)."
+        slide_text_5 = fr".-> {{\color[HTML]{{{GREEN_E.to_hex()[1:]}}}Goal}}: Find a string, \(x \in [d]^n\), that optimizes: \(\bra{{x}}\calC \ket{{x}}\)."
         
-        slide_text_1_mo = Tex(f"{{16cm}}{slide_text_1}", 
-                           font_size=28, tex_environment="minipage")
-        slide_text_2_mo = Tex(f"{{15cm}}{slide_text_2}", 
-                           font_size=28, tex_environment="minipage")
-        slide_text_1_mo.to_corner(UL, buff=0.5).shift(DOWN)
-        slide_text_2_mo.next_to(slide_text_1_mo, DOWN, aligned_edge=LEFT, buff=0.25).shift(RIGHT * 0.25)
+        slide_texts_1_to_5_a = Bullets(slide_text_1,slide_text_2,slide_text_3,slide_text_4,slide_text_5,minipage_size=16,double_space_for_new_sections=True)
+        slide_texts_1_to_5_b = Bullets(slide_text_1,slide_text_2,slide_text_3,slide_text_4,slide_text_5,minipage_size=8,double_space_for_new_sections=True)
 
-        slide_text_3_mo = Tex(f"{{16cm}}{slide_text_3}", 
-                           font_size=28, tex_environment="minipage")
-        slide_text_3_mo.next_to(slide_text_2_mo, DOWN, aligned_edge=LEFT, buff=0.25).shift(LEFT * 0.25+DOWN*0.25)
-
-        slide_text_4_mo = Tex(f"{{15cm}}{slide_text_4}", 
-                           font_size=28, tex_environment="minipage")
-        slide_text_4_mo.next_to(slide_text_3_mo, DOWN, aligned_edge=LEFT, buff=0.25).shift(RIGHT * 0.25)
-
-        slide_text_5_mo = Tex(f"{{15cm}}{slide_text_5}", 
-                           font_size=28, tex_environment="minipage")
-        slide_text_5_mo.next_to(slide_text_4_mo, DOWN, aligned_edge=LEFT, buff=0.25)
-        
         self.play(title.anim())
 
         self.wait(0.1)
         self.next_slide(notes="Recall where we left off with classical optimization.")
 
-        self.play(Write(slide_text_1_mo), run_time=0.5)
-        self.play(Write(slide_text_2_mo), run_time=0.5)
+        self.play(slide_texts_1_to_5_a.write_next_line(run_time=0.5))
+        self.play(slide_texts_1_to_5_a.write_next_line(run_time=0.5))
 
         self.wait(0.1)
         self.next_slide(notes="we just put the value into the diagonal entry indexed by the strings.")
 
-        self.play(Write(slide_text_3_mo), run_time = 0.5)
+        self.play(slide_texts_1_to_5_a.write_next_line(run_time=0.5))
 
-        # C_alpha_diag_mat = MathTex(r"\calC_\alpha = \begin{bmatrix}\calC_\alpha(111\cdots 1)\end{bmatrix}").shift(LEFT*5)
         C_alpha_diag_mat = MathTex(r"""
             C_\alpha = \begin{blockarray}{ccccccc}
                 & \vcenter{\hbox{\scriptsize $1\cdots 11$}} & \vcenter{\hbox{\scriptsize $1\cdots 12$}} & \vcenter{\hbox{\scriptsize $\cdots$}} & \vcenter{\hbox{\scriptsize $x$}} & \vcenter{\hbox{\scriptsize $\cdots$}} & \vcenter{\hbox{\scriptsize $d \cdots dd$}} \\
@@ -754,106 +737,73 @@ class IntroToLHPs(Slide):
                     \vcenter{\hbox{\scriptsize $d\cdots dd$}} & 0                           & 0                          & \cdots & 0               & \cdots & \calC_\alpha(d \cdots dd)\tstrut\bstrut \\
                 \end{block}
             \end{blockarray}
-        """,font_size=28).next_to(slide_text_3_mo, DOWN, buff=2)
+        """,font_size=28).next_to(slide_texts_1_to_5_a.get_lines()[2], DOWN, buff=2)
 
         self.play(Write(C_alpha_diag_mat))
 
         self.wait(0.1)
         self.next_slide(notes="Indeed, this means the value is just quadratic form of the computation basis vector. Moreover, we have turned this optimization problem into an eigenvalue problem.")
 
-        self.play(Write(slide_text_4_mo), run_time=0.5)
+        self.play(slide_texts_1_to_5_a.write_next_line(run_time=0.5))
 
         self.wait(0.1)
         self.next_slide()
 
-        self.play(Write(slide_text_5_mo), run_time=0.5)
+        self.play(slide_texts_1_to_5_a.write_next_line(run_time=0.5))
 
         self.wait(0.1)
         self.next_slide("We can note introduce the LHP, the quantum version of optimization")
 
         self.play(Unwrite(C_alpha_diag_mat), run_time=0.5)
 
-        slide_text_1b_mo = Tex(fr"{{8cm}}\RaggedRight{{{slide_text_1}}}", 
-                           font_size=28, tex_environment="minipage")
-        slide_text_2b_mo = Tex(fr"{{7.75cm}}\RaggedRight{{{slide_text_2}}}", 
-                           font_size=28, tex_environment="minipage")
-        slide_text_3b_mo = Tex(fr"{{8cm}}\RaggedRight{{{slide_text_3}}}", 
-                           font_size=28, tex_environment="minipage")
-        slide_text_4b_mo = Tex(fr"{{7.75cm}}\RaggedRight{{{slide_text_4}}}", 
-                           font_size=28, tex_environment="minipage")
-        slide_text_5b_mo = Tex(fr"{{7.75cm}}\RaggedRight{{{slide_text_5}}}", 
-                           font_size=28, tex_environment="minipage")
-        slide_text_1b_mo.to_corner(UL, buff=0.5).shift(DOWN)
-        slide_text_2b_mo.next_to(slide_text_1b_mo, DOWN, aligned_edge=LEFT, buff=0.25).shift(RIGHT * 0.25)
-        slide_text_3b_mo.next_to(slide_text_2b_mo, DOWN, aligned_edge=LEFT, buff=0.25).shift(LEFT * 0.25+DOWN*0.25)
-        slide_text_4b_mo.next_to(slide_text_3b_mo, DOWN, aligned_edge=LEFT, buff=0.25).shift(RIGHT * 0.25)
-        slide_text_5b_mo.next_to(slide_text_4b_mo, DOWN, aligned_edge=LEFT, buff=0.25)
-
         slide_title_1b = Text("Classical Optimization Problems", font_size=34)
         slide_title_1b.to_corner(UL, buff=0.5)
 
-        self.play(TransformMatchingShapes(slide_text_1_mo,slide_text_1b_mo),
-                  TransformMatchingShapes(slide_text_2_mo,slide_text_2b_mo),
-                  TransformMatchingShapes(slide_text_3_mo,slide_text_3b_mo),
-                  TransformMatchingShapes(slide_text_4_mo,slide_text_4b_mo),
-                  TransformMatchingShapes(slide_text_5_mo,slide_text_5b_mo),
+        self.play(TransformMatchingShapes(slide_texts_1_to_5_a.get_lines()[0],slide_texts_1_to_5_b.get_lines()[0]),
+                  TransformMatchingShapes(slide_texts_1_to_5_a.get_lines()[1],slide_texts_1_to_5_b.get_lines()[1]),
+                  TransformMatchingShapes(slide_texts_1_to_5_a.get_lines()[2],slide_texts_1_to_5_b.get_lines()[2]),
+                  TransformMatchingShapes(slide_texts_1_to_5_a.get_lines()[3],slide_texts_1_to_5_b.get_lines()[3]),
+                  TransformMatchingShapes(slide_texts_1_to_5_a.get_lines()[4],slide_texts_1_to_5_b.get_lines()[4]),
                   TransformMatchingShapes(title.title,slide_title_1b), run_time=0.5)
         
         line = Line(
-            start=UP * (config.frame_y_radius-1.25),      # top edge of frame
-            end=DOWN * config.frame_y_radius,      # bottom edge of frame
+            start=UP * (config.frame_y_radius-1.45),
+            end=DOWN * (config.frame_y_radius - 0.25)
         )
         
-        slide_title_1b = Text("Local Hamiltonian Problem", font_size=34)
-        slide_title_1b.to_corner(UL, buff=0.5).shift(RIGHT*8)
+        slide_title_2 = Text("Local Hamiltonian Problem", font_size=34)
+        slide_title_2.to_corner(UL, buff=0.5).shift(RIGHT*8)
 
-        self.play(title.line.animate.put_start_and_end_on(title.line.get_start(),title.line.get_end()+RIGHT*5.5), Create(line), Write(slide_title_1b), run_time=0.5)
+        self.play(title.line.animate.put_start_and_end_on(title.line.get_start(),title.line.get_end()+RIGHT*5.5), Create(line), Write(slide_title_2), run_time=0.5)
 
         self.wait(0.1)
         self.next_slide(notes="Here we generalize the notion on the left, that observables are represented by diagonal matrices, with the full quantum version that they need only be diagonalizable or rather self-adjoint.")
 
-        box1 = SurroundingRectangle(slide_text_3b_mo, color=GOLD, buff=0.1)
-        box2 = SurroundingRectangle(slide_text_4b_mo, color=GOLD, buff=0.1)
-        box3 = SurroundingRectangle(slide_text_5b_mo, color=GOLD, buff=0.1)
+        box1 = SurroundingRectangle(slide_texts_1_to_5_b[2], color=GOLD, buff=0.1)
+        box2 = SurroundingRectangle(slide_texts_1_to_5_b[3], color=GOLD, buff=0.1)
+        box3 = SurroundingRectangle(slide_texts_1_to_5_b[4], color=GOLD, buff=0.1)
 
-        slide_text_5 = r"We represent local terms as matrices with real eigenvalues, \(H_\alpha \in M_{d^n}(\C)\), called \emph{quantum observables} (or \emph{Hamiltonians})."
-        slide_text_6 = r"\(\rightarrow\) The full problem Hamiltonian is: \(H = \sum_{\alpha} H_\alpha\)."
-        slide_text_7 = r"\(\rightarrow\) For a state, \(\ket{\psi} \in (\C^d)^{\otimes n}\), we call \begin{center}\(\bra{\psi}H\ket{\psi} = \sum_\alpha \bra{\psi}H_\alpha\ket{\psi}\)\end{center} the \emph{energy} of \(\ket{\psi}\)."
-        slide_text_7b = r"\(\rightarrow\) We have that \(\max_{\ket{\psi}}(\bra{\psi}H\ket{\psi}) = \eig_{\max}(H)\)."
-        slide_text_8 = fr"\(\rightarrow\) {{\color[HTML]{{{GREEN_E.to_hex()[1:]}}}Goal}}: Find a state, \(\ket{{\psi}} \in (\C^d)^{{\otimes n}}\), that optimizes the energy, \(\bra{{\psi}}H\ket{{\psi}}\)."
-        slide_text_9 = r"\(H\) is said to be \(k\)-local if each \(H_\alpha\) acts as the identity on all but \(k\) qudits."
+        slide_text_6 = r" We represent local terms as matrices with real eigenvalues, \(H_\alpha \in M_{d^n}(\C)\), called \emph{quantum observables} (or \emph{Hamiltonians})."
+        slide_text_7 = r".-> The full problem Hamiltonian is: \(H = \sum_{\alpha} H_\alpha\)."
+        slide_text_8 = r".-> For a state, \(\ket{\psi} \in (\C^d)^{\otimes n}\), we call \begin{center}\(\bra{\psi}H\ket{\psi} = \sum_\alpha \bra{\psi}H_\alpha\ket{\psi}\)\end{center} the \emph{energy} of \(\ket{\psi}\)."
+        slide_text_9 = r".-> We have that \(\max_{\ket{\psi}}(\bra{\psi}H\ket{\psi}) = \eig_{\max}(H)\)."
+        slide_text_10 = fr".-> {{\color[HTML]{{{GREEN_E.to_hex()[1:]}}}Goal}}: Find a state, \(\ket{{\psi}} \in (\C^d)^{{\otimes n}}\), that optimizes the energy, \(\bra{{\psi}}H\ket{{\psi}}\)."
+        slide_text_11 = r" \(H\) is said to be \(k\)-local if each \(H_\alpha\) acts as the identity on all but \(k\) qudits."
 
-        slide_text_5_mo = Tex(fr"{{8cm}}\RaggedRight{{{slide_text_5}}}", 
-                           font_size=28, tex_environment="minipage")
-        slide_text_6_mo = Tex(fr"{{7.75cm}}\RaggedRight{{{slide_text_6}}}", 
-                           font_size=28, tex_environment="minipage")
-        slide_text_7_mo = Tex(fr"{{7.75cm}}\RaggedRight{{{slide_text_7}}}", 
-                           font_size=28, tex_environment="minipage")
-        slide_text_7b_mo = Tex(fr"{{7.75cm}}\RaggedRight{{{slide_text_7b}}}", 
-                           font_size=28, tex_environment="minipage")
-        slide_text_8_mo = Tex(fr"{{7.75cm}}\RaggedRight{{{slide_text_8}}}", 
-                           font_size=28, tex_environment="minipage")
-        slide_text_9_mo = Tex(fr"{{7.75cm}}\RaggedRight{{{slide_text_9}}}", 
-                           font_size=28, tex_environment="minipage")
-        slide_text_5_mo.to_corner(UL, buff=0.5).shift(DOWN).shift(RIGHT*8)
-        slide_text_6_mo.next_to(slide_text_5_mo, DOWN, aligned_edge=LEFT, buff=0.25).shift(RIGHT * 0.25)
-        slide_text_7_mo.next_to(slide_text_6_mo, DOWN, aligned_edge=LEFT, buff=0.25)
-        slide_text_7b_mo.next_to(slide_text_7_mo, DOWN, aligned_edge=LEFT, buff=0.25)
-        slide_text_8_mo.next_to(slide_text_7b_mo, DOWN, aligned_edge=LEFT, buff=0.25)
-        slide_text_9_mo.next_to(slide_text_8_mo, DOWN, aligned_edge=LEFT, buff=0.25).shift((LEFT + DOWN) * 0.25)
+        slide_texts_5_to_10 = Bullets(slide_text_6,slide_text_7,slide_text_8,slide_text_9,slide_text_10,slide_text_11, minipage_size=8.5,align_ref=DOWN*1.5+RIGHT*8.5,double_space_for_new_sections=True)
 
-        arrow1 = Arrow(start=slide_text_3b_mo.get_edge_center(RIGHT)+RIGHT*0.25, end=slide_text_5_mo.get_edge_center(LEFT)+LEFT*0.25,tip_length=0.2,color=GOLD,stroke_width=4)
-        arrow2 = Arrow(start=slide_text_3b_mo.get_edge_center(RIGHT)+RIGHT*0.25, end=slide_text_6_mo.get_edge_center(LEFT)+LEFT*0.25,tip_length=0.2,color=GOLD,stroke_width=4)
-        arrow3 = Arrow(start=slide_text_4b_mo.get_edge_center(RIGHT)+RIGHT*0.25, end=slide_text_7_mo.get_edge_center(LEFT)+LEFT*0.25,tip_length=0.2,color=GOLD,stroke_width=4)
-        arrow3b = Arrow(start=slide_text_4b_mo.get_edge_center(RIGHT)+RIGHT*0.25, end=slide_text_7b_mo.get_edge_center(LEFT)+LEFT*0.25,tip_length=0.2,color=GOLD,stroke_width=4)
-        arrow4 = Arrow(start=slide_text_5b_mo.get_edge_center(RIGHT)+RIGHT*0.25, end=slide_text_8_mo.get_edge_center(LEFT)+LEFT*0.25,tip_length=0.2,color=GOLD,stroke_width=4)
+        arrow1 = Arrow(start=slide_texts_1_to_5_b[2].get_edge_center(RIGHT)+RIGHT*0.25, end=slide_texts_5_to_10.get_lines()[0].get_edge_center(LEFT)+LEFT*0.25,tip_length=0.2,color=GOLD,stroke_width=4)
+        arrow2 = Arrow(start=slide_texts_1_to_5_b[2].get_edge_center(RIGHT)+RIGHT*0.25, end=slide_texts_5_to_10.get_lines()[1].get_edge_center(LEFT)+LEFT*0.25,tip_length=0.2,color=GOLD,stroke_width=4)
+        arrow3 = Arrow(start=slide_texts_1_to_5_b[3].get_edge_center(RIGHT)+RIGHT*0.25, end=slide_texts_5_to_10.get_lines()[2].get_edge_center(LEFT)+LEFT*0.25,tip_length=0.2,color=GOLD,stroke_width=4)
+        arrow3b = Arrow(start=slide_texts_1_to_5_b[3].get_edge_center(RIGHT)+RIGHT*0.25, end=slide_texts_5_to_10.get_lines()[3].get_edge_center(LEFT)+LEFT*0.25,tip_length=0.2,color=GOLD,stroke_width=4)
+        arrow4 = Arrow(start=slide_texts_1_to_5_b[4].get_edge_center(RIGHT)+RIGHT*0.25, end=slide_texts_5_to_10.get_lines()[4].get_edge_center(LEFT)+LEFT*0.25,tip_length=0.2,color=GOLD,stroke_width=4)
 
-        self.play(LaggedStart(Create(box1,run_time=0.5), GrowArrow(arrow1), Write(slide_text_5_mo,run_time=0.5), lag_ratio=0.5))
+        self.play(LaggedStart(Create(box1,run_time=0.5), GrowArrow(arrow1), slide_texts_5_to_10.write_next_line(run_time=0.5), lag_ratio=0.5))
 
         self.wait(0.1)
         self.next_slide(notes="We call this the Hamiltonian and the H_alpha's the local hamiltonians.")
 
-        self.play(LaggedStart(Transform(arrow1,arrow2,run_time=0.5), Write(slide_text_6_mo, run_time=0.5),lag_ratio=0.5))
+        self.play(LaggedStart(Transform(arrow1,arrow2,run_time=0.5), slide_texts_5_to_10.write_next_line(run_time=0.5),lag_ratio=0.5))
         self.remove(arrow1,arrow2)
         self.add(arrow2)
 
@@ -862,28 +812,26 @@ class IntroToLHPs(Slide):
 
         self.play(LaggedStart(AnimationGroup(Uncreate(arrow2, run_time=0.5), Uncreate(box1, run_time=0.5), Create(box2, run_time=0.5)),
                               GrowArrow(arrow3, run_time=0.5), 
-                              Write(slide_text_7_mo, run_time=0.5), lag_ratio=0.5))
+                              slide_texts_5_to_10.write_next_line(run_time=0.5), lag_ratio=0.5))
         
         self.wait(0.1)
         self.next_slide()
 
-        self.play(LaggedStart(Transform(arrow3,arrow3b,run_time=0.5), Write(slide_text_7b_mo, run_time=0.5),lag_ratio=0.5))
+        self.play(LaggedStart(Transform(arrow3,arrow3b,run_time=0.5), slide_texts_5_to_10.write_next_line(run_time=0.5),lag_ratio=0.5))
         self.remove(arrow3,arrow3b)
         self.add(arrow3b)
 
         self.wait(0.1)
         self.next_slide(notes="the quantity of most importance is teh quadratic form, which we call the energy. Instead of taking the quadratic form over only computation basis vectors we consider arbitrary states.")
 
-        # self.play(Create(box2, rate_func=lambda t: 1 - t), Create(box3), Write(slide_text_8_mo), run_time=0.5)
         self.play(LaggedStart(AnimationGroup(Uncreate(arrow3b, run_time=0.5), Uncreate(box2, run_time=0.5), Create(box3, run_time=0.5)),
                               GrowArrow(arrow4, run_time=0.5), 
-                              Write(slide_text_8_mo, run_time=0.5), lag_ratio=0.5))
-        self.wait(0.1)
-
+                              slide_texts_5_to_10.write_next_line(run_time=0.5), lag_ratio=0.5))
+        
         self.wait(0.1)
         self.next_slide()
 
-        self.play(Uncreate(arrow4), Uncreate(box3), Write(slide_text_9_mo), run_time=0.5)
+        self.play(Uncreate(arrow4), Uncreate(box3), slide_texts_5_to_10.write_next_line(), run_time=0.5)
         self.wait(0.1)
 
 
@@ -1820,24 +1768,20 @@ class CSPsOverDistributions(Slide):
         self.wait(0.1)
         self.next_slide()
 
-        slide_text_1 = r"The key difficulty in optimization for LHPs (and CSPs) is that the search space is exponential in size (or rather dimension)."
-        slide_text_2 = r"We need to relax the problem somehow."
-        slide_text_3 = r"\(\rightarrow\) We optimize over distributions of strings."
-        slide_text_4 = r"\(\rightarrow\) Observe that the expectation only depends on the marginal distribution, \(\mu^{ab}\)."
-        slide_text_5 = r"\(\rightarrow\) We relax the notion of a distribution to only be consistent on low-degree marginals/moments and their interaction."
+        slide_text_1 = r" The key difficulty in optimization for LHPs (and CSPs) is that the search space is exponential in size (or rather dimension)."
+        slide_text_2 = r" We need to relax the problem somehow."
+        slide_text_3 = r".-> We optimize over distributions of strings."
+        slide_text_4 = r".-> Observe that the expectation only depends on the marginal distribution, \(\mu^{ab}\)."
+        slide_text_5 = r".-> We relax the notion of a distribution to only be consistent on low-degree marginals/moments and their interaction."
         
-        slide_text_1_mo = Tex(f"{{11cm}}{slide_text_1}", font_size=28, tex_environment="minipage").to_corner(UL, buff=0.5).shift(DOWN)
-        slide_text_2_mo = Tex(f"{{11cm}}{slide_text_2}", font_size=28, tex_environment="minipage").next_to(slide_text_1_mo, DOWN, aligned_edge=LEFT, buff=0.25)
-        slide_text_3_mo = Tex(f"{{10.75cm}}{slide_text_3}", font_size=28, tex_environment="minipage").next_to(slide_text_2_mo, DOWN, aligned_edge=LEFT, buff=0.25).shift(RIGHT * 0.25)
-        slide_text_4_mo = Tex(f"{{10.75cm}}{slide_text_4}", font_size=28, tex_environment="minipage").next_to(slide_text_3_mo, DOWN, aligned_edge=LEFT, buff=0.25)
-        slide_text_5_mo = Tex(f"{{10.75cm}}{slide_text_5}", font_size=28, tex_environment="minipage").next_to(slide_text_4_mo, DOWN, aligned_edge=LEFT, buff=0.25)
+        slide_texts = Bullets(slide_text_1,slide_text_2,slide_text_3,slide_text_4,slide_text_5,minipage_size=11)
 
-        self.play(Write(slide_text_1_mo), run_time=0.5)
+        self.play(slide_texts.write_next_line(run_time=0.5))
 
         self.wait(0.1)
         self.next_slide()
 
-        self.play(Write(slide_text_2_mo), run_time=0.5)
+        self.play(slide_texts.write_next_line(run_time=0.5))
 
         self.wait(0.1)
         self.next_slide()
@@ -1874,7 +1818,7 @@ class CSPsOverDistributions(Slide):
         self.wait(0.1)
         self.next_slide()
 
-        self.play(LaggedStart(Create(surrbox1, rate_func=lambda t: 1 - t, run_time=0.5),Write(slide_text_3_mo, run_time = 0.25)))
+        self.play(LaggedStart(Create(surrbox1, rate_func=lambda t: 1 - t, run_time=0.5),slide_texts.write_next_line(run_time=0.25)))
 
         self.play(LaggedStart(TransformMatchingShapes(max_cut_eq[0], max_cut_eq2[0]),
                               Transform(max_cut_eq[1], max_cut_eq2[1]),
@@ -1887,7 +1831,7 @@ class CSPsOverDistributions(Slide):
         self.remove(max_cut_eq,max_cut_eq2,*[max_cut_eq[i] for i in range(4)],*[max_cut_eq2[i] for i in range(4)])
         self.add(max_cut_eq2)
 
-        self.play(LaggedStart(Write(slide_text_4_mo, run_time=0.5),
+        self.play(LaggedStart(slide_texts.write_next_line(run_time=0.5),
                               TransformMatchingShapes(max_cut_eq2[2], max_cut_eq3[0]),
                               Transform(max_cut_eq2[3],max_cut_eq3[1]),
                               lag_ratio=0.25))
@@ -1895,52 +1839,11 @@ class CSPsOverDistributions(Slide):
         self.wait(0.1)
         self.next_slide()
 
-        self.play(Write(slide_text_5_mo), run_time=0.5)
+        # self.play(Write(slide_text_5_mo), run_time=0.5)
+        self.play(slide_texts.write_next_line(run_time=0.5))
         
         self.wait(0.1)
         self.next_slide()
-
-        # positivity_eq = MathTex(r"\E_{x \sim \mu}[\calP(x)^2]", r"= \sum_{x \in \{-1,+1\}} \mu(x) \calP(x)^2 \geq 0",
-        #                                     font_size=28).shift(LEFT*3 + DOWN*1)
-        # unit_eq = MathTex(r"\E_{x \sim \mu}[1] = \sum_{x \in \{-1,+1\}} \mu(1) = 1",
-        #                                     font_size=28).next_to(positivity_eq,DOWN,buff=0.25)
-        # what_is_dist_text = Tex("What is a Distribution?",font_size=28).next_to(positivity_eq,UP,buff=0.25)
-        # wid_vg = VGroup(what_is_dist_text,unit_eq,positivity_eq)
-        # surrbox2 = SurroundingRectangle(wid_vg, color=BLACK, buff=0.25)
-
-
-        # low_degree_poly_1 = MathTex(r"{{ \E_{x \sim \mu}\left[\left(x_1 + x_2\right)^2\right] }} = \E_{x \sim \mu}[{{x_1^2}} + 2 {{x_1 x_2}} + {{x_2^2}}]",
-        #                                     font_size=28).next_to(wid_vg,DOWN,buff=0.5)
-        # low_degree_poly_2 = MathTex(r"{{ \E_{x \sim \mu}\left[\left(x_1 + x_2\right)^2\right] }} = \E_{x \sim \mu}[{{x_1^2}}] + 2 \E_{x \sim \mu}[{{x_1 x_2}}] + \E_{x \sim \mu}[{{x_2^2}}]",
-        #                                     font_size=28).move_to(low_degree_poly_1,aligned_edge=LEFT)
-        
-        # self.play(Write(what_is_dist_text,run_time=0.25))
-
-        # self.wait(0.1)
-        # self.next_slide()
-
-        # self.play(LaggedStart(Write(positivity_eq,run_time=0.25),
-        #                       Write(unit_eq,run_time=0.25),
-        #                       Create(surrbox2),
-        #                       lag_ratio=0.25))
-
-        # self.wait(0.1)
-        # self.next_slide()
-
-        # positivity_eq_0_copy = positivity_eq[0].copy()
-        # self.play(TransformMatchingShapes(positivity_eq_0_copy, low_degree_poly_1[0]))
-        # self.wait(0.25)
-        # self.play(Write(low_degree_poly_1[1:]),run_time=0.5)
-
-        # self.wait(0.1)
-        # self.next_slide()
-        # self.remove(low_degree_poly_1,positivity_eq_0_copy,low_degree_poly_1[0])
-        # self.add(low_degree_poly_1)
-
-        # self.play(TransformMatchingTex(low_degree_poly_1,low_degree_poly_2))
-
-        # self.wait(0.1)
-        # self.next_slide()
 
 
 class ALittleSOS(Slide):
@@ -1952,11 +1855,12 @@ class ALittleSOS(Slide):
     def construct(self):
         title = FancyTitle("Pseudo-Distributions and SDPs")
 
-        slide_text_1 = r"We relax the notion of a distribution to only be consistent on low-degree marginals/moments and their interaction."
+        slide_text_1 = r"We relax the notion of a distribution to only be consistent on low- \phantom{\(\rightarrow\)} degree marginals/moments and their interaction."
+        slide_text_1b = r"We relax the notion of a distribution to only be consistent on low-degree marginals/moments and their interaction."
         
         slide_text_0_mo = Tex(f"{{10.75cm}}\\(\\rightarrow\\) {slide_text_1}", font_size=28, tex_environment="minipage").to_corner(UL, buff=0.5).shift(DOWN*3.75+RIGHT*0.25)
 
-        slide_text_1_mo = Tex(f"{{16cm}}{slide_text_1}", font_size=28, tex_environment="minipage").to_corner(UL, buff=0.5).shift(DOWN)
+        slide_text_1_mo = Tex(f"{{16cm}}{slide_text_1b}", font_size=28, tex_environment="minipage").to_corner(UL, buff=0.5).shift(DOWN)
 
         self.add(slide_text_0_mo)
 
@@ -1988,34 +1892,6 @@ class ALittleSOS(Slide):
                                             font_size=28).move_to(low_degree_poly_1,aligned_edge=LEFT)
         low_degree_poly_3 = MathTex(r"{{ \E_{x \sim \mu}\left[\left(x_1 - x_2\right)^2\right] }} = (\bra{x_1} - \bra{x_2}) M (\ket{x_1} - \ket{x_2})",
                                             font_size=28).next_to(low_degree_poly_1,DOWN,aligned_edge=LEFT,buff=0.25)
-        
-        # moment_mat = MathTex(r"""
-        #     M = \begin{blockarray}{ccccccc}
-        #         & \vcenter{\hbox{\scriptsize $1$}} & \vcenter{\hbox{\scriptsize $x_1$}} & \vcenter{\hbox{\scriptsize $x_2$}} & \vcenter{\hbox{\scriptsize $\cdots$}} & \vcenter{\hbox{\scriptsize $x_1 x_2$}} & \vcenter{\hbox{\scriptsize $\cdots$}} \\
-        #         \begin{block}{c[cccccc]}
-        #             \vcenter{\hbox{\scriptsize $1$}}       & \E_\mu[1] \tstrut\bstrut     & \E_\mu[x_1]       & \E_\mu[x_2]       & \cdots & \E_\mu[x_1 x_2]     & \cdots \\
-        #             \vcenter{\hbox{\scriptsize $x_1$}}     & \E_\mu[x_1]                  & \E_\mu[x_1^2]     & \E_\mu[x_1 x_2]   & \cdots & \E_\mu[x_1^2 x_2]   & \cdots \\
-        #             \vcenter{\hbox{\scriptsize $x_2$}}     & \E_\mu[x_2]                  & \E_\mu[x_1 x_2]   & \E_\mu[x_2^2]     & \cdots & \E_\mu[x_1 x_2^2]   & \cdots \\
-        #             \vcenter{\hbox{\scriptsize $\vdots$}}  & \vdots                       & \vdots            & \vdots            & \ddots & \vdots              &        \\
-        #             \vcenter{\hbox{\scriptsize $x_1 x_2$}} & \E_\mu[x_1 x_2]              & \E_\mu[x_1^2 x_2] & \E_\mu[x_1 x_2^2] & \cdots & \E_\mu[x_1^2 x_2^2] & \cdots \\
-        #             \vcenter{\hbox{\scriptsize $\vdots$}}  & \vdots                       & \vdots            &  \vdots           &        & \vdots              & \ddots \\
-        #         \end{block}
-        #     \end{blockarray}
-        # """,font_size=28).next_to(low_degree_poly_2,DOWN, buff=1)
-
-        # moment_mat_2 = MathTex(r"""
-        #     M = \begin{blockarray}{ccccccc}
-        #         & \vcenter{\hbox{\scriptsize $1$}} & \vcenter{\hbox{\scriptsize $x_1$}} & \vcenter{\hbox{\scriptsize $x_2$}} & \vcenter{\hbox{\scriptsize $\cdots$}} & \vcenter{\hbox{\scriptsize $x_1 x_2$}} & \vcenter{\hbox{\scriptsize $\cdots$}} \\
-        #         \begin{block}{c[cccccc]}
-        #             \vcenter{\hbox{\scriptsize $1$}}       & \E_\mu[1] \tstrut\bstrut     & \E_\mu[x_1]       & \E_\mu[x_2]       & \cdots & \E_\mu[x_1 x_2] & \cdots \\
-        #             \vcenter{\hbox{\scriptsize $x_1$}}     & \E_\mu[x_1]                  & 1                 & \E_\mu[x_1 x_2]   & \cdots & \E_\mu[x_2]     & \cdots \\
-        #             \vcenter{\hbox{\scriptsize $x_2$}}     & \E_\mu[x_2]                  & \E_\mu[x_1 x_2]   & 1                 & \cdots & \E_\mu[x_1]     & \cdots \\
-        #             \vcenter{\hbox{\scriptsize $\vdots$}}  & \vdots                       & \vdots            & \vdots            & \ddots & \vdots          &        \\
-        #             \vcenter{\hbox{\scriptsize $x_1 x_2$}} & \E_\mu[x_1 x_2]              & \E_\mu[x_2]       & \E_\mu[x_1]       & \cdots & 1               & \cdots \\
-        #             \vcenter{\hbox{\scriptsize $\vdots$}}  & \vdots                       & \vdots            &  \vdots           &        & \vdots          & \ddots \\
-        #         \end{block}
-        #     \end{blockarray}
-        # """,font_size=28).next_to(low_degree_poly_2,DOWN, buff=1)
 
         moment_mat_b = Matrix([
             [r"\E_\mu[1]",       r"\E_\mu[x_1]",       r"\E_\mu[x_2]",         r"\cdots",      r"\E_\mu[x_1 x_2]",     r"\cdots"     ],
